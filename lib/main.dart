@@ -90,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     print('Current format: $format');
   }
 
-  void updateEvents(List<DocumentSnapshot> snapshot){
+  void updateEvents(List<DocumentSnapshot> snapshot, BuildContext context){
     List<Event> newEvents = [];
     for(var i = 0; i < snapshot.length; i++){
       Event e = new Event(snapshot[i].data['message'], snapshot[i].data['dateOfEvent']);
@@ -110,6 +110,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         } else{
           _events.putIfAbsent(newEvents[i-1].dateOfEvent, () => messagesOnThisDay);
           messagesOnThisDay=[];
+          messagesOnThisDay.add(newEvents[i].message);
         }
       } else{
         messagesOnThisDay.add(newEvents[i].message);
@@ -118,6 +119,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     if(newEvents.length !=0){
       _events.putIfAbsent(newEvents[newEvents.length-1].dateOfEvent, () => messagesOnThisDay);
     }
+
+    _visibleEvents = _events;
   }
 
   @override
@@ -126,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       stream: Firestore.instance.collection('events').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
-        updateEvents(snapshot.data.documents);
+        updateEvents(snapshot.data.documents, context);
         return Scaffold(
           appBar: AppBar(
             title: Text(widget.title),
