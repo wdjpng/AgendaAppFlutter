@@ -3,6 +3,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Event.dart';
 
+DateTime currentDateTime = DateTime.now();
 class EventsPage extends StatefulWidget {
   EventsPage({Key key, this.title}) : super(key: key);
 
@@ -21,7 +22,7 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _selectedDay = DateTime.now();
+    _selectedDay = currentDateTime;
 
 
     _events = {
@@ -71,7 +72,7 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
       Event e = new Event(snapshot[i].data['message'], snapshot[i].data['dateOfEvent'].toDate());
       newEvents.add(e);
       //String b = snapshot[i].data['message'];
-      //newEvents.add(new Event('a', 0, 'm', 's', 's', DateTime.now(), DateTime.now()));
+      //newEvents.add(new Event('a', 0, 'm', 's', 's', DateTime.currentDateTime(), DateTime.currentDateTime()));
     }
 
     newEvents.sort((a, b) => a.dateOfEvent.compareTo(b.dateOfEvent));
@@ -80,7 +81,9 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
 
     for (var i = 0; i < newEvents.length; i++){
       if(messagesOnThisDay.length > 0){
-        if(newEvents[i-1].dateOfEvent == newEvents[i].dateOfEvent){
+        if(newEvents[i-1].dateOfEvent.year == newEvents[i].dateOfEvent.year &&
+            newEvents[i-1].dateOfEvent.month == newEvents[i].dateOfEvent.month &&
+            newEvents[i-1].dateOfEvent.day == newEvents[i].dateOfEvent.day){
           messagesOnThisDay.add(newEvents[i].message);
         } else{
           _events.putIfAbsent(newEvents[i-1].dateOfEvent, () => messagesOnThisDay);
@@ -93,6 +96,16 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     }
     if(newEvents.length !=0){
       _events.putIfAbsent(newEvents[newEvents.length-1].dateOfEvent, () => messagesOnThisDay);
+    }
+    
+    for (var i = 0; i < _events.keys.length; i++){
+      if(_events.keys.elementAt(i).year == currentDateTime.year &&
+          _events.keys.elementAt(i).month == currentDateTime.month &&
+          _events.keys.elementAt(i).day == currentDateTime.day && _events.keys.elementAt(i) != currentDateTime){
+        _events[currentDateTime].insertAll(0, _events[_events.keys.elementAt(i)]);
+        _events.remove(_events.keys.elementAt(i));
+        break;
+      }
     }
 
     _visibleEvents = _events;
