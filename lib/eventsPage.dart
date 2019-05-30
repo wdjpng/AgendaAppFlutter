@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Event.dart';
+import 'uploaderPage.dart';
 
 DateTime currentDateTime = DateTime.now();
 class EventsPage extends StatefulWidget {
@@ -111,6 +112,13 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     _visibleEvents = _events;
   }
 
+  void onWriteOwnMessageButtonPressed(BuildContext context){
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UploaderPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -132,7 +140,11 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
               const SizedBox(height: 8.0),
               Expanded(child: _buildEventList()),
             ],
-          ),
+          ), floatingActionButton: new FloatingActionButton(
+            onPressed: () => onWriteOwnMessageButtonPressed(context),
+            tooltip: 'Eigene Nachricht erstellen',
+            child: Icon(Icons.create),
+        ),
         );
       },
     );
