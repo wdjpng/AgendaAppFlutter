@@ -129,16 +129,16 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   // Simple TableCalendar configuration (using Styles)
   Widget _buildTableCalendar() {
     return TableCalendar(
-      locale: 'en_US',
+      locale: 'de_CH',
       events: _visibleEvents,
       initialCalendarFormat: CalendarFormat.week,
       formatAnimation: FormatAnimation.slide,
       startingDayOfWeek: StartingDayOfWeek.monday,
       availableGestures: AvailableGestures.all,
       availableCalendarFormats: const {
-        CalendarFormat.month: 'Month',
-        CalendarFormat.twoWeeks: '2 weeks',
-        CalendarFormat.week: 'Week',
+        CalendarFormat.month: 'Monate',
+        CalendarFormat.twoWeeks: '2 Wochen',
+        CalendarFormat.week: 'Woche',
       },
       calendarStyle: CalendarStyle(
         selectedColor: Colors.deepOrange[400],

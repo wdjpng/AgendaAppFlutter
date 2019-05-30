@@ -11,11 +11,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Table Calendar Demo',
+      title: 'AgendaApp',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: EventsPage(title: 'Table Calendar Demo'),
+      home: EventsPage(title: 'AgendaApp'),
     );
   }
 }
