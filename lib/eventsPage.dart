@@ -3,7 +3,8 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Event.dart';
 import 'uploaderPage.dart';
-
+import 'Data.dart';
+import 'database_helpers.dart';
 DateTime currentDateTime = DateTime.now();
 class EventsPage extends StatefulWidget {
   EventsPage({Key key, this.title}) : super(key: key);
@@ -18,6 +19,8 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   DateTime _selectedDay;
   Map<DateTime, List> _events;
   Map<DateTime, List> _visibleEvents;
+  List<Event> sqliteEvents = List<Event>();
+
   List _selectedEvents;
   AnimationController _controller;
   @override
@@ -67,13 +70,44 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     print('Current format: $format');
   }
 
+  _read() async {
+    DatabaseHelper helper = DatabaseHelper.instance;
+    List<Map> maps = await helper.getSavedEvents();
+    List<Event> events=List<Event>();
+
+    List<Event> tmp = sqliteEvents;
+    for(var i = 0; i < maps.length; i++){
+      if(maps[i][columnDateOfEvent]!=null && maps[i][columnMessage]!=null){
+        sqliteEvents.add(Event.fromMap(maps[i]));
+        if(sqliteEvents[sqliteEvents.length-1].message == null || sqliteEvents[sqliteEvents.length-1].dateOfEvent == null){
+          sqliteEvents=tmp;
+          break;
+        }
+      }
+    }
+
+
+
+  }
+
+
   void updateEvents(List<DocumentSnapshot> snapshot, BuildContext context){
     List<Event> newEvents = [];
+    _read();
+    if(sqliteEvents!=null){
+      newEvents.addAll(sqliteEvents);
+    }
+
     for(var i = 0; i < snapshot.length; i++){
       Event e = new Event(snapshot[i].data['message'], snapshot[i].data['dateOfEvent'].toDate());
       newEvents.add(e);
-      //String b = snapshot[i].data['message'];
-      //newEvents.add(new Event('a', 0, 'm', 's', 's', DateTime.currentDateTime(), DateTime.currentDateTime()));
+    }
+
+    for(var i = 0; i < newEvents.length; i++){
+      if(newEvents[i].message == null || newEvents[i].dateOfEvent == null){
+        newEvents.removeAt(i);
+        i--;
+      }
     }
 
     newEvents.sort((a, b) => a.dateOfEvent.compareTo(b.dateOfEvent));
@@ -112,10 +146,12 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     _visibleEvents = _events;
   }
 
+
   void onWriteOwnMessageButtonPressed(BuildContext context){
+    Data data = new Data(_selectedDay);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => UploaderPage()),
+      MaterialPageRoute(builder: (context) => UploaderPage(data: data,)),
     );
   }
 
@@ -154,7 +190,6 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   // Simple TableCalendar configuration (using Styles)
   Widget _buildTableCalendar() {
     return TableCalendar(
-      locale: 'de_CH',
       events: _visibleEvents,
       initialCalendarFormat: CalendarFormat.week,
       formatAnimation: FormatAnimation.slide,

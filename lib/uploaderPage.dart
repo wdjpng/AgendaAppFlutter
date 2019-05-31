@@ -1,28 +1,36 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
+import 'Data.dart';
+import 'database_helpers.dart';
+import 'Event.dart';
 
 class UploaderPage extends StatefulWidget {
+  final Data data;
   final String title = "AgendaApp";
-  UploaderPage({Key key, title}) : super(key: key);
+  UploaderPage({Key key, title, this.data}) : super(key: key);
 
 
 
   @override
-  _UploaderPageState createState() => _UploaderPageState();
+  _UploaderPageState createState() => _UploaderPageState(data);
 }
 
 class _UploaderPageState extends State<UploaderPage> {
+  Data data;
+
+  _UploaderPageState(Data data){
+    this.data = data;
+  }
+
   TextEditingController messageText = new TextEditingController();
 
-  DateTime selectedDate = DateTime.now();
-  DateTime initialDateTime;
+  DateTime selectedDate;
 
   @override
   void initState() {
     super.initState();
-    initialDateTime = selectedDate;
+    selectedDate = data.dateTime;
   }
 
   Future<Null> _selectDate(BuildContext context) async {
@@ -39,10 +47,6 @@ class _UploaderPageState extends State<UploaderPage> {
   }
 
   String getButtonText(){
-    if(selectedDate == initialDateTime){
-      return 'Bitte das Datum auswählen';
-    }
-
     return 'Der ' + selectedDate.day.toString() + '. ' + selectedDate.month.toString()
         + '. ' + selectedDate.year.toString() + ' ist ausgewählt';
   }
@@ -67,29 +71,25 @@ class _UploaderPageState extends State<UploaderPage> {
   }
 
   bool isCorrectUserData(String message, BuildContext context){
-    if(message == "" || selectedDate == initialDateTime){
-      if(message == "" && selectedDate != initialDateTime){
+    if(message == ""){
         showMessage(context, "NICHT ALLE FELDER AUSGEFÜLLT", "Bitte geben Sie eine Nachricht ein", AlertType.error);
-      } else if(message != "" && selectedDate == initialDateTime){
-        showMessage(context, "NICHT ALLE FELDER AUSGEFÜLLT", "Bitte wählen Sie ein Datum aus",  AlertType.error);
-      } else{
-        showMessage(context, "NICHT ALLE FELDER AUSGEFÜLLT", "Bitte wählen Sie ein Datum aus und geben Sie bitte eine Nachricht ein",  AlertType.error);
-      }
-
       return false;
     }
 
     return true;
   }
 
-  //TODO
   void popWidget(){
-
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 
-  //TODO
-  void pushEvent(String message){
 
+  pushEvent(String message) async{
+      Event event = new Event(message, selectedDate);
+      DatabaseHelper helper = DatabaseHelper.instance;
+      int id = await helper.insert(event);
+      print('inserted row: $id');
   }
 
   void onUploadButtonPressed(BuildContext context, TextEditingController textEditingController){
