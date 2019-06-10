@@ -5,6 +5,8 @@ import 'Event.dart';
 import 'uploaderPage.dart';
 import 'Data.dart';
 import 'database_helpers.dart';
+import 'drawer.dart';
+
 DateTime currentDateTime = DateTime.now();
 class EventsPage extends StatefulWidget {
   EventsPage({Key key, this.title}) : super(key: key);
@@ -166,7 +168,7 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
           appBar: AppBar(
             title: Text(widget.title),
           ),
-          drawer: Drawer(),
+          drawer:new DrawerOnly(),
           body: Column(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
