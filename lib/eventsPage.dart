@@ -25,7 +25,6 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   List<String> chosenSubjects = List<String>();
   List _selectedEvents;
   AnimationController _controller;
-  @override
   void initState() {
     super.initState();
     _selectedDay = currentDateTime;
@@ -74,8 +73,9 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
 
   _read() async {
     DatabaseHelper helper = DatabaseHelper.instance;
-    List<Map> maps = await helper.getSavedEvents() ?? List<Map>();
 
+    List<Map> maps = await helper.getSavedEvents() ?? List<Map>();
+     sqliteEvents= [];
 
     List<Event> tmp = sqliteEvents;
     for(var i = 0; i < maps.length; i++){
@@ -92,7 +92,7 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
 
   }
 
-   updateChosenSubjects() async{
+   updateChosenEvents() async{
     DatabaseHelper helper = DatabaseHelper.instance;
     List<Map> subjects = await helper.getSavedSubjects();
 
@@ -107,6 +107,8 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
 
   void updateEvents(List<DocumentSnapshot> snapshot, BuildContext context){
     List<Event> newEvents = [];
+    _events = Map<DateTime, List>();
+
     _read();
     if(sqliteEvents!=null){
       newEvents.addAll(sqliteEvents);
@@ -153,13 +155,14 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     if(newEvents.length !=0){
       _events.putIfAbsent(newEvents[newEvents.length-1].dateOfEvent, () => messagesOnThisDay);
     }
-    
+
     for (var i = 0; i < _events.keys.length; i++){
       if(_events.keys.elementAt(i).year == currentDateTime.year &&
           _events.keys.elementAt(i).month == currentDateTime.month &&
           _events.keys.elementAt(i).day == currentDateTime.day && _events.keys.elementAt(i) != currentDateTime){
-        _events[currentDateTime].insertAll(0, _events[_events.keys.elementAt(i)]);
-        _events.remove(_events.keys.elementAt(i));
+        _events[currentDateTime] = ['Heute'];
+          _events[currentDateTime].insertAll(0, _events[_events.keys.elementAt(i)]);
+          _events.remove(_events.keys.elementAt(i));
         break;
       }
     }
@@ -183,7 +186,7 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
         updateEvents(snapshot.data.documents, context);
-        updateChosenSubjects();
+        updateChosenEvents();
         return Scaffold(
           appBar: AppBar(
             title: Text(widget.title),

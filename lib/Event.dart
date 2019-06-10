@@ -18,7 +18,6 @@ class Event implements Comparable<Event>{
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       columnMessage:message,
-      columnMessage:subject,
       columnDateOfEvent: dateOfEvent.toIso8601String()
     };
     if (id != null) {
