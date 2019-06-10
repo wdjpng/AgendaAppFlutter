@@ -11,15 +11,19 @@ final String columnId = '_id';
 final String columnDateOfEvent = 'dateOfEvent';
 final String columnMessage = 'message';
 
+final String tableSubjects = 'subjects';
+final String columnIsSelected = 'isSelected';
+final String columnName = 'name';
+
 //Source: https://pusher.com/tutorials/local-data-flutter
 
 // singleton class to manage the database
 class DatabaseHelper {
 
   // This is the actual database filename that is saved in the docs directory.
-  static final _databaseName = "events.db";
+  static final _databaseName = "sqliteData.db";
   // Increment this version when you need to change the schema.
-  static final _databaseVersion = 2;
+  static final _databaseVersion = 3;
 
   // Make this a singleton class.
   DatabaseHelper._privateConstructor();
@@ -53,11 +57,17 @@ class DatabaseHelper {
                 $columnDateOfEvent DATETIME NOT NULL
               )
               ''');
+    await db.execute('''
+              CREATE TABLE $tableSubjects (
+                $columnIsSelected BOOL NOT NULL,
+                $columnName TEXT NOT NULL
+              )
+              ''');
   }
 
   // Database helper methods:
 
-  Future<int> insert(Event event) async {
+  insertEvent(Event event) async {
     Database db = await database;
     int id = await db.insert(tableEvents, event.toMap());
     return id;
@@ -71,5 +81,26 @@ class DatabaseHelper {
       return maps;
     }
     return null;
+  }
+  
+  insertSubjectIfAbsent(String name) async {
+    Database db = await database;
+    List<Map> result = await db.rawQuery('SELECT * FROM subjects WHERE name=?', [name]);
+    if(result.length==0){
+      db.rawInsert('INSERT INTO subjects(name, isSelected) VALUES(?, ?)', [name, false]);
+    }
+  }
+
+  updateSubjectSelection(String name, bool newValue) async {
+    Database db = await database;
+    await db.rawUpdate('UPDATE ? SET ? = ? WHERE ? = ?''', [tableSubjects, columnIsSelected, newValue, columnName, name]);
+  }
+
+  Future<List<Map>> getSavedSubjects() async {
+    Database db = await database;
+    List<Map> result = await db.query(tableSubjects);
+
+    return result;
+
   }
 }

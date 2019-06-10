@@ -88,7 +88,7 @@ class _UploaderPageState extends State<UploaderPage> {
   pushEvent(String message) async{
       Event event = new Event(message, selectedDate);
       DatabaseHelper helper = DatabaseHelper.instance;
-      int id = await helper.insert(event);
+      int id = await helper.insertEvent(event);
       print('inserted row: $id');
   }
 
