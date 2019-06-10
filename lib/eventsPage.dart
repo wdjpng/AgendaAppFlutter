@@ -22,7 +22,7 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   Map<DateTime, List> _events;
   Map<DateTime, List> _visibleEvents;
   List<Event> sqliteEvents = List<Event>();
-
+  List<String> chosenSubjects = List<String>();
   List _selectedEvents;
   AnimationController _controller;
   @override
@@ -92,6 +92,18 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
 
   }
 
+   updateChosenSubjects() async{
+    DatabaseHelper helper = DatabaseHelper.instance;
+    List<Map> subjects = await helper.getSavedSubjects();
+
+    chosenSubjects = List<String>();
+
+    for(var i = 0; i < subjects.length; i++){
+      if(subjects[i][columnIsSelected] == 1){
+        chosenSubjects.add(subjects[i][columnName]);
+      }
+    }
+  }
 
   void updateEvents(List<DocumentSnapshot> snapshot, BuildContext context){
     List<Event> newEvents = [];
@@ -102,7 +114,14 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
 
     for(var i = 0; i < snapshot.length; i++){
       Event e = new Event(snapshot[i].data['message'], snapshot[i].data['dateOfEvent'].toDate());
-      newEvents.add(e);
+      e.subject = snapshot[i].data['subject'];
+
+      for(var i = 0; i < chosenSubjects.length; i++){
+        if(chosenSubjects[i] == e.subject){
+          newEvents.add(e);
+          break;
+        }
+      }
     }
 
     for(var i = 0; i < newEvents.length; i++){
@@ -164,6 +183,7 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
         updateEvents(snapshot.data.documents, context);
+        updateChosenSubjects();
         return Scaffold(
           appBar: AppBar(
             title: Text(widget.title),

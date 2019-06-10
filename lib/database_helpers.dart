@@ -93,7 +93,7 @@ class DatabaseHelper {
 
   updateSubjectSelection(String name, bool newValue) async {
     Database db = await database;
-    await db.rawUpdate('UPDATE ? SET ? = ? WHERE ? = ?''', [tableSubjects, columnIsSelected, newValue, columnName, name]);
+    await db.rawUpdate('UPDATE subjects SET isSelected = ? WHERE name = ?''', [newValue, name]);
   }
 
   Future<List<Map>> getSavedSubjects() async {

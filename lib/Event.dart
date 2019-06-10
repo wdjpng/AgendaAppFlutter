@@ -18,6 +18,7 @@ class Event implements Comparable<Event>{
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       columnMessage:message,
+      columnMessage:subject,
       columnDateOfEvent: dateOfEvent.toIso8601String()
     };
     if (id != null) {
@@ -29,6 +30,7 @@ class Event implements Comparable<Event>{
   Event.fromMap(Map<String, dynamic> map) {
     dateOfEvent= DateTime.parse(map[columnDateOfEvent]);
     message=  map[columnMessage];
+    subject = map[subject];
     id = map[columnId];
   }
 
