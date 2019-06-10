@@ -72,8 +72,8 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
 
   _read() async {
     DatabaseHelper helper = DatabaseHelper.instance;
-    List<Map> maps = await helper.getSavedEvents();
-    List<Event> events=List<Event>();
+    List<Map> maps = await helper.getSavedEvents() ?? List<Map>();
+
 
     List<Event> tmp = sqliteEvents;
     for(var i = 0; i < maps.length; i++){
@@ -166,6 +166,7 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
           appBar: AppBar(
             title: Text(widget.title),
           ),
+          drawer: Drawer(),
           body: Column(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[

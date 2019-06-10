@@ -32,10 +32,46 @@
               "client_type": 3
             },
             {
-              "client_id": "209455329132-gj7ef5ql3eiclgbr3d9i9a4htpocgof4.apps.googleusercontent.com",
+              "client_id": "209455329132-6kvn90u3adg0vs9ngi00oc10fffnp7ui.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.wdjpng.calendar1"
+                "bundle_id": "com.wdjpng.creator1"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209455329132:android:28f79e8fd9f72a79",
+        "android_client_info": {
+          "package_name": "com.wdjpng.creator1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "209455329132-rqi59ha73kaas7tjcq11sbefq148qh5m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDISfU87x1nh7X9kuqM4azyFu_F0cH6fUA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "209455329132-rqi59ha73kaas7tjcq11sbefq148qh5m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "209455329132-6kvn90u3adg0vs9ngi00oc10fffnp7ui.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.wdjpng.creator1"
               }
             }
           ]
