@@ -23,15 +23,14 @@ class _EditorPageState extends State<EditorPage> {
     this.data = data;
   }
 
-  TextEditingController messageText = new TextEditingController();
-
+  TextEditingController messageTextController = new TextEditingController();
   DateTime selectedDate;
 
   @override
   void initState() {
     super.initState();
     selectedDate = data.dateTime;
-    messageText.text = data.message;
+    messageTextController.text = data.message;
   }
 
   Future<Null> _selectDate(BuildContext context) async {
@@ -123,6 +122,7 @@ class _EditorPageState extends State<EditorPage> {
     Navigator.pop(context);
     Navigator.pop(context);
   }
+
   void deleteEvent(Data data) async{
     DatabaseHelper helper = DatabaseHelper.instance;
     int id = await helper.deleteEvent(data.message);
@@ -161,6 +161,7 @@ class _EditorPageState extends State<EditorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       key:key,
       appBar: AppBar(
         title: Text(widget.title),
@@ -181,7 +182,7 @@ class _EditorPageState extends State<EditorPage> {
             new Container(
               width: 350.0,
               child: TextField(
-                  controller: messageText,
+                  controller: messageTextController,
                   keyboardType: TextInputType.multiline,
                   maxLines: 2,
                   decoration: InputDecoration(
@@ -200,7 +201,7 @@ class _EditorPageState extends State<EditorPage> {
                 ),
                 SizedBox(width: 35),
                 FloatingActionButton(
-                  onPressed: () => onUpdateButtonPressed(context, data, messageText.text),
+                  onPressed: () => onUpdateButtonPressed(context, data, messageTextController.text),
                   tooltip: 'Bestätigen',
                   child: Icon(Icons.done),
                   heroTag: 'floatingActionButton0',
