@@ -6,6 +6,7 @@ import 'uploaderPage.dart';
 import 'Data.dart';
 import 'database_helpers.dart';
 import 'drawer.dart';
+import 'editorPage.dart';
 
 DateTime currentDateTime = DateTime.now();
 class EventsPage extends StatefulWidget {
@@ -24,6 +25,8 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   List<Event> sqliteEvents = List<Event>();
   List<String> chosenSubjects = List<String>();
   List _selectedEvents;
+  final key = new GlobalKey<ScaffoldState>();
+
   AnimationController _controller;
   void initState() {
     super.initState();
@@ -156,6 +159,7 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
       _events.putIfAbsent(newEvents[newEvents.length-1].dateOfEvent, () => messagesOnThisDay);
     }
 
+    _events[currentDateTime] = ['Heute'];
     for (var i = 0; i < _events.keys.length; i++){
       if(_events.keys.elementAt(i).year == currentDateTime.year &&
           _events.keys.elementAt(i).month == currentDateTime.month &&
@@ -170,13 +174,37 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     _visibleEvents = _events;
   }
 
-
   void onWriteOwnMessageButtonPressed(BuildContext context){
     Data data = new Data(_selectedDay);
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => UploaderPage(data: data,)),
     );
+  }
+
+  bool isEventEditableByUser(String message){
+    for(var i = 0; i < sqliteEvents.length; i++){
+      if(sqliteEvents[i].message==message){
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  void pushEditorPage(BuildContext context, String message){
+    if(isEventEditableByUser(message)){
+      Data data = new Data(_selectedDay);
+      data.message = message;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => EditorPage(data: data,)),
+      );
+    } else{
+      key.currentState.showSnackBar(new SnackBar(
+        content: new Text("Das ist nicht dein Eintrag!"),
+      ));
+    }
   }
 
   @override
@@ -188,6 +216,7 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
         updateEvents(snapshot.data.documents, context);
         updateChosenEvents();
         return Scaffold(
+          key: key,
           appBar: AppBar(
             title: Text(widget.title),
           ),
@@ -217,14 +246,12 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   Widget _buildTableCalendar() {
     return TableCalendar(
       events: _visibleEvents,
-      initialCalendarFormat: CalendarFormat.week,
+      initialCalendarFormat: CalendarFormat.month,
       formatAnimation: FormatAnimation.slide,
       startingDayOfWeek: StartingDayOfWeek.monday,
       availableGestures: AvailableGestures.all,
       availableCalendarFormats: const {
-        CalendarFormat.month: 'Monate',
-        CalendarFormat.twoWeeks: '2 Wochen',
-        CalendarFormat.week: 'Woche',
+        CalendarFormat.month: 'Monate'
       },
       calendarStyle: CalendarStyle(
         selectedColor: Colors.deepOrange[400],
@@ -256,7 +283,7 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
             margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
             child: ListTile(
               title: Text(event.toString()),
-              onTap: () => print('$event tapped!'),
+              onTap: () => pushEditorPage(context, event),
             ),
           ))
           .toList(),
