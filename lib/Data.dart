@@ -1,9 +1,8 @@
-/// This class is used to transmit data in a single object
-class Data{
-  DateTime dateOfEvent;
-  String message;
+/// This class is used to transmit data in a single object.
+class Data {
+  Data();
 
-  Data(DateTime dateTime){
-    this.dateOfEvent = dateTime;
-  }
+  DateTime dateOfEvent = DateTime.now();
+  String message = '';
+  String url = 'flutter.io';
 }

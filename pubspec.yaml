@@ -20,6 +20,7 @@ dependencies:
   table_calendar: ^1.1.4
   rflutter_alert: ^1.0.2
   cloud_firestore: ^0.9.0
+  webview_flutter: any
   sqflite: any
   path_provider: any
   flutter:

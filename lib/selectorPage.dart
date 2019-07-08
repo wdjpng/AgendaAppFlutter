@@ -35,7 +35,6 @@ class SelectorState extends State<SelectorPage> {
         subjects.putIfAbsent(maps[i][columnName], () => isTrue);
       }
     }
-    setState(() {});
   }
 
   @override

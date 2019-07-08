@@ -79,7 +79,8 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
 
   /// Opens the [UploaderPage]
   void onWriteOwnMessageButtonPressed(BuildContext context) {
-    Data data = new Data(_selectedDay);
+    Data data = new Data();
+    data.dateOfEvent = _selectedDay;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -105,7 +106,8 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   /// it and if so opens the [EditorPage] to edit that message.
   void onEventPressed(BuildContext context, String message) {
     if (isEventEditableByUser(message)) {
-      Data data = new Data(_selectedDay);
+      Data data = new Data();
+      data.dateOfEvent = _selectedDay;
       data.message = message;
       Navigator.push(
         context,
