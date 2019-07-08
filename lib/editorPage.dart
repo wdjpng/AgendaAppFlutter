@@ -5,6 +5,8 @@ import 'Data.dart';
 import 'database_helpers.dart';
 import 'Event.dart';
 
+/// This widget is used to edit existing sqlite events. It is opened when the
+/// user clicks on a sqlite event in the [EventPage].
 class EditorPage extends StatefulWidget {
   final Data data;
   final String title = "AgendaApp";
@@ -12,27 +14,30 @@ class EditorPage extends StatefulWidget {
   EditorPage({Key key, title, this.data}) : super(key: key);
 
   @override
-  _EditorPageState createState() => _EditorPageState(data);
+  EditorPageState createState() => EditorPageState(data);
 }
 
-class _EditorPageState extends State<EditorPage> {
+class EditorPageState extends State<EditorPage> {
   Data data;
+  /// This key is used to be able to show snackbars.
   final key = new GlobalKey<ScaffoldState>();
 
-  _EditorPageState(Data data) {
+  EditorPageState(Data data) {
     this.data = data;
   }
 
+  /// The [TextEditingController] of the input field for the message.
   TextEditingController messageTextController = new TextEditingController();
   DateTime selectedDate;
 
   @override
   void initState() {
     super.initState();
-    selectedDate = data.dateTime;
+    selectedDate = data.dateOfEvent;
     messageTextController.text = data.message;
   }
 
+  /// Opens the date selector.
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
@@ -46,16 +51,7 @@ class _EditorPageState extends State<EditorPage> {
     print('Date selected: ' + selectedDate.toIso8601String());
   }
 
-  String getButtonText() {
-    return 'Der ' +
-        selectedDate.day.toString() +
-        '. ' +
-        selectedDate.month.toString() +
-        '. ' +
-        selectedDate.year.toString() +
-        ' ist ausgewählt';
-  }
-
+  /// Shows a rflutter alert.
   void showAlert(
       BuildContext context, String title, String message, AlertType alertType) {
     Alert(
@@ -76,6 +72,18 @@ class _EditorPageState extends State<EditorPage> {
     ).show();
   }
 
+  /// Returns the text for the button to select the date based on the selected date.
+  String getButtonText(DateTime selectedDate) {
+    return 'Der ' +
+        selectedDate.day.toString() +
+        '. ' +
+        selectedDate.month.toString() +
+        '. ' +
+        selectedDate.year.toString() +
+        ' ist ausgewählt';
+  }
+
+  /// Checks whether all input fields are filled in correctly.
   bool isCorrectUserData(String message, BuildContext context) {
     if (message == "") {
       showAlert(context, "NICHT ALLE FELDER AUSGEFÜLLT",
@@ -86,11 +94,13 @@ class _EditorPageState extends State<EditorPage> {
     return true;
   }
 
-  void popWidget() {
+
+  void popContextTwice() {
     Navigator.pop(context);
     Navigator.pop(context);
   }
 
+  /// Adds new event to the offline sqlite database.
   void pushEvent(String message) async {
     Event event = new Event(message, selectedDate);
     DatabaseHelper helper = DatabaseHelper.instance;
@@ -98,13 +108,14 @@ class _EditorPageState extends State<EditorPage> {
     print('inserted row: $id');
   }
 
+  /// Updates an event in the offline sqlite database.
   void updateEvent(Data oldData, String newMessage, DateTime newDateOfEvent){
     DatabaseHelper helper = DatabaseHelper.instance;
     helper.updateEvent(oldData.message, newMessage, newDateOfEvent);
   }
 
-  void onUpdateButtonPressed(BuildContext context, Data data, String newMessage) {
-
+  /// Checks for correct user data, updates the data and shows a success message.
+  void eventUpdateHandler(BuildContext context, Data data, String newMessage) {
     if (!isCorrectUserData(newMessage, context)) {
       return;
     }
@@ -114,21 +125,24 @@ class _EditorPageState extends State<EditorPage> {
     showAlert(
         context, "Eintrag erfolgreich verändert", "", AlertType.success);
     FocusScope.of(context).requestFocus(new FocusNode());
-    popWidget();
+    popContextTwice();
   }
 
+  /// Deletes an event and closes the alert as well as the input form.
   void onDeletionConfirmed(Data data, BuildContext context){
     deleteEvent(data);
-    Navigator.pop(context);
-    Navigator.pop(context);
+    popContextTwice();
   }
 
+  /// Deletes the event in the offline sqlite database.
   void deleteEvent(Data data) async{
     DatabaseHelper helper = DatabaseHelper.instance;
     int id = await helper.deleteEvent(data.message);
     print('deleted row: $id');
   }
 
+  /// Asks the user whether he really wants to delete the event and either closes
+  /// the windows or calls the [onDeletionConfirmed] method.
   void onDeleteButtonPressed(BuildContext context, Data data) {
     Alert(
       context: context,
@@ -158,6 +172,7 @@ class _EditorPageState extends State<EditorPage> {
     ).show();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,7 +192,7 @@ class _EditorPageState extends State<EditorPage> {
               textColor: Colors.white,
               color: Colors.lightBlue,
               onPressed: () => _selectDate(context),
-              child: Text(getButtonText()),
+              child: Text(getButtonText(selectedDate)),
             ),
             new Container(
               width: 350.0,
@@ -201,7 +216,7 @@ class _EditorPageState extends State<EditorPage> {
                 ),
                 SizedBox(width: 35),
                 FloatingActionButton(
-                  onPressed: () => onUpdateButtonPressed(context, data, messageTextController.text),
+                  onPressed: () => eventUpdateHandler(context, data, messageTextController.text),
                   tooltip: 'Bestätigen',
                   child: Icon(Icons.done),
                   heroTag: 'floatingActionButton0',

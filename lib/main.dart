@@ -3,10 +3,10 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:calendar1/eventsPage.dart';
 
 void main() {
-  initializeDateFormatting().then((_) => runApp(MyApp()));
+  initializeDateFormatting().then((_) => runApp(AgendaApp()));
 }
 
-class MyApp extends StatelessWidget {
+class AgendaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

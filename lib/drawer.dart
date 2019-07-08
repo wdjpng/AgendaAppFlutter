@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'selectorPage.dart';
 import 'eventsPage.dart';
 
+/// The [Drawer] used in the [EventsPageState]
 class DrawerOnly extends StatelessWidget {
   @override
   Widget build (BuildContext context) {

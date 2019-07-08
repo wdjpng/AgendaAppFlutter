@@ -5,24 +5,26 @@ import 'Data.dart';
 import 'database_helpers.dart';
 import 'Event.dart';
 
+/// This widget is used to add new sqlite events. It is opened when the
+/// user clicks the floating button in the [EventPage].
 class UploaderPage extends StatefulWidget {
   final Data data;
   final String title = "AgendaApp";
+
   UploaderPage({Key key, title, this.data}) : super(key: key);
 
-
-
   @override
-  _UploaderPageState createState() => _UploaderPageState(data);
+  UploaderPageState createState() => UploaderPageState(data);
 }
 
-class _UploaderPageState extends State<UploaderPage> {
+class UploaderPageState extends State<UploaderPage> {
   Data data;
 
-  _UploaderPageState(Data data){
+  UploaderPageState(Data data) {
     this.data = data;
   }
 
+  /// The [TextEditingController] of the input field for the message.
   TextEditingController messageText = new TextEditingController();
 
   DateTime selectedDate;
@@ -30,9 +32,10 @@ class _UploaderPageState extends State<UploaderPage> {
   @override
   void initState() {
     super.initState();
-    selectedDate = data.dateTime;
+    selectedDate = data.dateOfEvent;
   }
 
+  /// Opens the date selector.
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
@@ -46,12 +49,20 @@ class _UploaderPageState extends State<UploaderPage> {
     print('Date selected: ' + selectedDate.toIso8601String());
   }
 
-  String getButtonText(){
-    return 'Der ' + selectedDate.day.toString() + '. ' + selectedDate.month.toString()
-        + '. ' + selectedDate.year.toString() + ' ist ausgewählt';
+  /// Returns the text for the button to select the date based on the selected date
+  String getButtonText() {
+    return 'Der ' +
+        selectedDate.day.toString() +
+        '. ' +
+        selectedDate.month.toString() +
+        '. ' +
+        selectedDate.year.toString() +
+        ' ist ausgewählt';
   }
 
-  void showMessage(BuildContext context, String title, String message, AlertType alertType){
+  /// Shows a rflutter alert.
+  void showMessage(
+      BuildContext context, String title, String message, AlertType alertType) {
     Alert(
       context: context,
       type: alertType,
@@ -70,37 +81,43 @@ class _UploaderPageState extends State<UploaderPage> {
     ).show();
   }
 
-  bool isCorrectUserData(String message, BuildContext context){
-    if(message == ""){
-        showMessage(context, "NICHT ALLE FELDER AUSGEFÜLLT", "Bitte geben Sie eine Nachricht ein", AlertType.error);
+  /// Checks whether all input fields are filled in correctly.
+  bool isCorrectUserData(String message, BuildContext context) {
+    if (message == "") {
+      showMessage(context, "NICHT ALLE FELDER AUSGEFÜLLT",
+          "Bitte geben Sie eine Nachricht ein", AlertType.error);
       return false;
     }
 
     return true;
   }
 
-  void popWidget(){
+  void popWidget() {
     Navigator.pop(context);
     Navigator.pop(context);
   }
 
-
-  pushEvent(String message) async{
-      Event event = new Event(message, selectedDate);
-      DatabaseHelper helper = DatabaseHelper.instance;
-      int id = await helper.insertEvent(event);
-      print('inserted row: $id');
+  /// Adds new event to the offline sqlite database.
+  pushEvent(String message) async {
+    Event event = new Event(message, selectedDate);
+    DatabaseHelper helper = DatabaseHelper.instance;
+    int id = await helper.insertEvent(event);
+    print('inserted row: $id');
   }
 
-  void onUploadButtonPressed(BuildContext context, TextEditingController textEditingController){
+  /// Checks for correct user data, pushes new event to sqlite database and
+  /// shows a success message.
+  void onUploadButtonPressed(
+      BuildContext context, TextEditingController textEditingController) {
     String message = textEditingController.text;
 
-    if(!isCorrectUserData(message, context)){
+    if (!isCorrectUserData(message, context)) {
       return;
     }
 
     pushEvent(message);
-    showMessage(context, "DATEN ERFOLGREICH HOCHGELADEN", "", AlertType.success);
+    showMessage(
+        context, "DATEN ERFOLGREICH HOCHGELADEN", "", AlertType.success);
     FocusScope.of(context).requestFocus(new FocusNode());
     popWidget();
   }
@@ -116,7 +133,9 @@ class _UploaderPageState extends State<UploaderPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            SizedBox(height: 20.0,),
+            SizedBox(
+              height: 20.0,
+            ),
             RaisedButton(
               textColor: Colors.white,
               color: Colors.lightBlue,
@@ -125,15 +144,12 @@ class _UploaderPageState extends State<UploaderPage> {
             ),
             new Container(
               width: 350.0,
-              child:TextField(
+              child: TextField(
                   controller: messageText,
                   keyboardType: TextInputType.multiline,
                   maxLines: 2,
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Nachricht'
-                  )
-              ),
+                      border: OutlineInputBorder(), labelText: 'Nachricht')),
             ),
             FloatingActionButton(
               onPressed: () => onUploadButtonPressed(context, messageText),

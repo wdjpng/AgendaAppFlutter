@@ -1,5 +1,6 @@
 import 'database_helpers.dart';
 
+/// A simple class to handle events.
 class Event implements Comparable<Event>{
   String publisher;
   int type;
@@ -10,6 +11,7 @@ class Event implements Comparable<Event>{
   DateTime datePublished;
   DateTime dateOfEvent;
 
+  /// Compares to events based on their date
   int compareTo(Event other){
     return dateOfEvent.compareTo(other.dateOfEvent);
   }
@@ -26,6 +28,7 @@ class Event implements Comparable<Event>{
     return map;
   }
 
+  ///Creates an event based on a map
   Event.fromMap(Map<String, dynamic> map) {
     dateOfEvent= DateTime.parse(map[columnDateOfEvent]);
     message=  map[columnMessage];
@@ -35,7 +38,6 @@ class Event implements Comparable<Event>{
 
 
   Event( String message, DateTime dateOfEvent) {
-
     this.type = type;
     this.publisher = publisher;
     this.schoolSubject = schoolSubject;

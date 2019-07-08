@@ -1,8 +1,9 @@
+/// This class is used to transmit data in a single object
 class Data{
-  DateTime dateTime;
+  DateTime dateOfEvent;
   String message;
 
   Data(DateTime dateTime){
-    this.dateTime = dateTime;
+    this.dateOfEvent = dateTime;
   }
 }
