@@ -34,6 +34,8 @@ class SelectorState extends State<SelectorPage> {
         bool isTrue = maps[i][columnIsSelected] == 1;
         subjects.putIfAbsent(maps[i][columnName], () => isTrue);
       }
+      /// Rebuilds the widget. Thus the newly added subjects get shown.
+      setState(() {});
     }
   }
 
