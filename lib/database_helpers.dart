@@ -139,24 +139,15 @@ class DatabaseHelper {
     List<Map> maps = await helper.getSavedEvents() ?? List<Map>();
     EventsPageState.sqliteEvents = [];
 
-    List<Event> tmp = EventsPageState.sqliteEvents;
     for (var i = 0; i < maps.length; i++) {
+      /// Check whether all important elements of the event are not null
       if (maps[i][columnDateOfEvent] != null &&
           maps[i][columnMessage] != null) {
         EventsPageState.sqliteEvents.add(Event.fromMap(maps[i]));
-        if (EventsPageState
-                    .sqliteEvents[EventsPageState.sqliteEvents.length - 1]
-                    .message ==
-                null ||
-            EventsPageState
-                    .sqliteEvents[EventsPageState.sqliteEvents.length - 1]
-                    .dateOfEvent ==
-                null) {
-          EventsPageState.sqliteEvents = tmp;
-          break;
-        }
       }
     }
+
+    return EventsPageState.sqliteEvents;
   }
 
   /// Reads events from the sqlite database and saves them to the [sqliteEvents]
@@ -176,11 +167,13 @@ class DatabaseHelper {
 
   /// Updates the visible events based on the online firestore and the offline
   /// sqlite events.
-  static void updateEvents(List<DocumentSnapshot> snapshot, BuildContext context) {
+  static void updateEvents(
+      List<DocumentSnapshot> snapshot, BuildContext context) {
     List<Event> newEvents = [];
     EventsPageState.events = Map<DateTime, List>();
 
     DatabaseHelper.readEvents();
+    newEvents = EventsPageState.sqliteEvents;
 
     /// Adds the online events that have the correct subjects to the new events.
     for (var i = 0; i < snapshot.length; i++) {
@@ -207,16 +200,14 @@ class DatabaseHelper {
     for (var i = 0; i < newEvents.length; i++) {
       if (messagesOnThisDay.length > 0) {
         if (newEvents[i - 1].dateOfEvent.year ==
-          newEvents[i].dateOfEvent.year &&
-          newEvents[i - 1].dateOfEvent.month == newEvents[i].dateOfEvent.month &&
-          newEvents[i - 1].dateOfEvent.day == newEvents[i].dateOfEvent.day) {
-
+                newEvents[i].dateOfEvent.year &&
+            newEvents[i - 1].dateOfEvent.month ==
+                newEvents[i].dateOfEvent.month &&
+            newEvents[i - 1].dateOfEvent.day == newEvents[i].dateOfEvent.day) {
           /// When the current day is the same as the one of the other messages
           /// on that day, the message also belongs to the [messagesOnThisDay].
-            messagesOnThisDay.add(newEvents[i].message);
-
-          }
-        else {
+          messagesOnThisDay.add(newEvents[i].message);
+        } else {
           /// The day of the current event is not equal to the one of the other
           /// messages in [messagesOnThisDay] thus messagesOnThisDay contains
           /// all the messages on that day and can be added to the events.
@@ -228,9 +219,7 @@ class DatabaseHelper {
           messagesOnThisDay = [];
           messagesOnThisDay.add(newEvents[i].message);
         }
-      }
-
-      else {
+      } else {
         /// When the [messageOnThisDay] is empty we can just add a new message
         /// on a new day to it.
         messagesOnThisDay.add(newEvents[i].message);
@@ -247,16 +236,16 @@ class DatabaseHelper {
     /// 'Today', we have to merge today's messages with the event 'Today'.
     EventsPageState.events[currentDateTime] = ['Heute'];
     for (var i = 0; i < EventsPageState.events.keys.length; i++) {
-
       /// If one of the key's days is today, the messages will be merged together.
-      if (EventsPageState.events.keys.elementAt(i).year == currentDateTime.year &&
-          EventsPageState.events.keys.elementAt(i).month == currentDateTime.month &&
+      if (EventsPageState.events.keys.elementAt(i).year ==
+              currentDateTime.year &&
+          EventsPageState.events.keys.elementAt(i).month ==
+              currentDateTime.month &&
           EventsPageState.events.keys.elementAt(i).day == currentDateTime.day &&
           EventsPageState.events.keys.elementAt(i) != currentDateTime) {
-
         EventsPageState.events[currentDateTime] = ['Heute'];
-        EventsPageState.events[currentDateTime]
-            .insertAll(0, EventsPageState.events[EventsPageState.events.keys.elementAt(i)]);
+        EventsPageState.events[currentDateTime].insertAll(0,
+            EventsPageState.events[EventsPageState.events.keys.elementAt(i)]);
         EventsPageState.events.remove(EventsPageState.events.keys.elementAt(i));
         break;
       }
