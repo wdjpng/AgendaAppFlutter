@@ -173,11 +173,13 @@ class DatabaseHelper {
     EventsPageState.events = Map<DateTime, List>();
 
     DatabaseHelper.readEvents();
-    newEvents = EventsPageState.sqliteEvents;
+
+    /// This is used to pass by value and not by reference
+    newEvents.insertAll(0, EventsPageState.sqliteEvents);
 
     /// Adds the online events that have the correct subjects to the new events.
     for (var i = 0; i < snapshot.length; i++) {
-      /// Creates the new potential event based on the online event.
+      /// Creates the new potential event basedt on the online event.
       Event potentialEvent = new Event(snapshot[i].data['message'],
           snapshot[i].data['dateOfEvent'].toDate());
       potentialEvent.subject = snapshot[i].data['subject'];
@@ -195,7 +197,6 @@ class DatabaseHelper {
     newEvents.sort((a, b) => a.dateOfEvent.compareTo(b.dateOfEvent));
 
     List<String> messagesOnThisDay = [];
-
     /// Adds all the events of one day to the events map.
     for (var i = 0; i < newEvents.length; i++) {
       if (messagesOnThisDay.length > 0) {
