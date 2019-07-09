@@ -176,7 +176,6 @@ class EditorPageState extends State<EditorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       key:key,
       appBar: AppBar(
         title: Text(widget.title),
