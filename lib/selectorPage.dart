@@ -2,12 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'database_helpers.dart';
 
+/// This widget is used to select the subjects whose events the user wants to
+/// see in the [EventPage].
 class SelectorPage extends StatefulWidget {
   @override
   _SelectorPageState createState() => new _SelectorPageState();
 }
 
 class _SelectorPageState extends State<SelectorPage> {
+  /// The search result for the current search query as a list of subject names
+  List<String> _searchResult = [];
+
+  /// All the subjects the user can select. The String is the name of the subject
+  /// and the whether it is selected is saved in the bool
+  Map<String, bool> subjects = {};
+
   TextEditingController controller = new TextEditingController();
 
   @override
@@ -53,6 +62,7 @@ class _SelectorPageState extends State<SelectorPage> {
             ),
             body: new Column(
               children: <Widget>[
+                /// The container for the search bar
                 new Container(
                   color: Theme.of(context).primaryColor,
                   child: new Padding(
@@ -77,6 +87,7 @@ class _SelectorPageState extends State<SelectorPage> {
                     ),
                   ),
                 ),
+                /// The expander for the ListView
                 new Expanded(
                     child: new ListView.builder(
                   itemCount: _searchResult.length,
@@ -100,6 +111,7 @@ class _SelectorPageState extends State<SelectorPage> {
         });
   }
 
+  /// Updates the [_searchResult] according to the current search query
   onSearchTextChanged(String searchText) async {
     _searchResult.clear();
     if (searchText.isEmpty) {
@@ -116,7 +128,4 @@ class _SelectorPageState extends State<SelectorPage> {
     _searchResult.sort();
     setState(() {});
   }
-
-  List<String> _searchResult = [];
-  Map<String, bool> subjects = {};
 }
