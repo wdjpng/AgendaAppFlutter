@@ -2,11 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'database_helpers.dart';
 
-void main() => runApp(new MaterialApp(
-      home: new SelectorPage(),
-      debugShowCheckedModeBanner: false,
-    ));
-
 class SelectorPage extends StatefulWidget {
   @override
   _SelectorPageState createState() => new _SelectorPageState();
