@@ -4,9 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Event.dart';
 import 'uploaderPage.dart';
 import 'Data.dart';
-import 'database_helpers.dart';
+import 'sqliteDatabaseHelpers.dart';
 import 'drawer.dart';
 import 'editorPage.dart';
+import 'fireStoreHelpers.dart';
 
 DateTime currentDateTime = DateTime.now();
 
@@ -129,8 +130,8 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
       stream: Firestore.instance.collection('events').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
-        DatabaseHelper.updateEvents(snapshot.data.documents, context);
-        DatabaseHelper.readChosenSubjects();
+        FirestoreHelper.updateEvents(snapshot.data.documents, context);
+        SqliteDatabaseHelper.readChosenSubjects();
         return Scaffold(
           key: key,
           appBar: AppBar(

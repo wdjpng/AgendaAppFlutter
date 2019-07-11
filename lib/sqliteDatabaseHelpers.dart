@@ -5,8 +5,6 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'Event.dart';
 import 'eventsPage.dart';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 final String tableEvents = 'events';
 final String columnId = 'id';
@@ -19,16 +17,16 @@ final String columnName = 'name';
 
 /// Class to manage the sqlite database.
 /// Source: https://pusher.com/tutorials/local-data-flutter.
-class DatabaseHelper {
+class SqliteDatabaseHelper {
   /// This is the actual database filename that is saved in the docs directory.
   static final _databaseName = "sqliteData.db";
 
   /// Increment this version when you need to change the schema.
   static final _databaseVersion = 5;
 
-  DatabaseHelper._privateConstructor();
+  SqliteDatabaseHelper._privateConstructor();
 
-  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+  static final SqliteDatabaseHelper instance = SqliteDatabaseHelper._privateConstructor();
 
   static Database _database;
 
@@ -139,7 +137,7 @@ class DatabaseHelper {
   /// Reads events from the sqlite database and saves them to the [sqliteEvents]
   /// from the [EventsPageState] class.
   static readEvents() async {
-    DatabaseHelper helper = DatabaseHelper.instance;
+    SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
 
     List<Map> maps = await helper.getSavedEvents() ?? List<Map>();
     EventsPageState.sqliteEvents = [];
@@ -158,7 +156,7 @@ class DatabaseHelper {
   /// Reads events from the sqlite database and saves them to the [sqliteEvents]
   /// from the [EventsPageState] class
   static readChosenSubjects() async {
-    DatabaseHelper helper = DatabaseHelper.instance;
+    SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
     List<Map> subjects = await helper.getSavedSubjects();
 
     EventsPageState.chosenSubjects = List<String>();
@@ -168,96 +166,5 @@ class DatabaseHelper {
         EventsPageState.chosenSubjects.add(subjects[i][columnName]);
       }
     }
-  }
-
-  /// Updates the visible events based on the online firestore and the offline
-  /// sqlite events.
-  static void updateEvents(
-      List<DocumentSnapshot> snapshot, BuildContext context) {
-    List<Event> newEvents = [];
-    EventsPageState.events = Map<DateTime, List>();
-
-    DatabaseHelper.readEvents();
-
-    /// This is used to pass by value and not by reference
-    newEvents.insertAll(0, EventsPageState.sqliteEvents);
-
-    /// Adds the online events that have the correct subjects to the new events.
-    for (var i = 0; i < snapshot.length; i++) {
-      /// Creates the new potential event basedt on the online event.
-      Event potentialEvent = new Event(snapshot[i].data['message'],
-          snapshot[i].data['dateOfEvent'].toDate());
-      potentialEvent.subject = snapshot[i].data['subject'];
-
-      /// Adds the event to the [newEvents].
-      for (var i = 0; i < EventsPageState.chosenSubjects.length; i++) {
-        if (EventsPageState.chosenSubjects[i] == potentialEvent.subject) {
-          newEvents.add(potentialEvent);
-          break;
-        }
-      }
-    }
-
-    /// Sorts the [newEvents] based on their date.
-    newEvents.sort((a, b) => a.dateOfEvent.compareTo(b.dateOfEvent));
-
-    List<String> messagesOnThisDay = [];
-
-    /// Adds all the events of one day to the events map.
-    for (var i = 0; i < newEvents.length; i++) {
-      if (messagesOnThisDay.length > 0) {
-        if (newEvents[i - 1].dateOfEvent.year ==
-                newEvents[i].dateOfEvent.year &&
-            newEvents[i - 1].dateOfEvent.month ==
-                newEvents[i].dateOfEvent.month &&
-            newEvents[i - 1].dateOfEvent.day == newEvents[i].dateOfEvent.day) {
-          /// When the current day is the same as the one of the other messages
-          /// on that day, the message also belongs to the [messagesOnThisDay].
-          messagesOnThisDay.add(newEvents[i].message);
-        } else {
-          /// The day of the current event is not equal to the one of the other
-          /// messages in [messagesOnThisDay] thus messagesOnThisDay contains
-          /// all the messages on that day and can be added to the events.
-          ///
-          /// Afterwards the [messagesOnThisDay] can be reset and the new event
-          /// of the next day can be added to it.
-          EventsPageState.events.putIfAbsent(
-              newEvents[i - 1].dateOfEvent, () => messagesOnThisDay);
-          messagesOnThisDay = [];
-          messagesOnThisDay.add(newEvents[i].message);
-        }
-      } else {
-        /// When the [messageOnThisDay] is empty we can just add a new message
-        /// on a new day to it.
-        messagesOnThisDay.add(newEvents[i].message);
-      }
-    }
-
-    /// This adds the last [messageOnThisDay] to the events.
-    if (newEvents.length != 0) {
-      EventsPageState.events.putIfAbsent(
-          newEvents[newEvents.length - 1].dateOfEvent, () => messagesOnThisDay);
-    }
-
-    /// Because we have used putIfAbsent but there always is the event
-    /// 'Today', we have to merge today's messages with the event 'Today'.
-    EventsPageState.events[currentDateTime] = ['Heute'];
-    for (var i = 0; i < EventsPageState.events.keys.length; i++) {
-      /// If one of the key's days is today, the messages will be merged together.
-      if (EventsPageState.events.keys.elementAt(i).year ==
-              currentDateTime.year &&
-          EventsPageState.events.keys.elementAt(i).month ==
-              currentDateTime.month &&
-          EventsPageState.events.keys.elementAt(i).day == currentDateTime.day &&
-          EventsPageState.events.keys.elementAt(i) != currentDateTime) {
-        EventsPageState.events[currentDateTime] = ['Heute'];
-        EventsPageState.events[currentDateTime].insertAll(0,
-            EventsPageState.events[EventsPageState.events.keys.elementAt(i)]);
-        EventsPageState.events.remove(EventsPageState.events.keys.elementAt(i));
-        break;
-      }
-    }
-
-    EventsPageState.visibleEvents = EventsPageState.events;
   }
 }

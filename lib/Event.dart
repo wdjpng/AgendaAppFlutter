@@ -1,4 +1,4 @@
-import 'database_helpers.dart';
+import 'sqliteDatabaseHelpers.dart';
 
 /// A simple class to handle events.
 class Event implements Comparable<Event>{

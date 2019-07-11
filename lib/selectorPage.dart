@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'database_helpers.dart';
+import 'sqliteDatabaseHelpers.dart';
 import 'package:calendar1/Subject.dart';
 
 /// This widget is used to select the subjects whose events the user wants to
@@ -28,7 +28,7 @@ class _SelectorPageState extends State<SelectorPage> {
   /// Updates the offline sqlite subjects with the online firestore subjects.
   void updateSubjects(List<DocumentSnapshot> snapshot) {
     for (var i = 0; i < snapshot.length; i++) {
-      DatabaseHelper helper = DatabaseHelper.instance;
+      SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
       helper.updateSubject(snapshot[i].documentID, snapshot[i]['name'], subjects.values.toList().length -1 >= i ? subjects.values.toList()[i].isSelected : null);
     }
   }
@@ -36,7 +36,7 @@ class _SelectorPageState extends State<SelectorPage> {
   /// Reads the subjects from the offline sqlite database and stores them in the
   /// [subjects] map.
   void _readSubjects() async {
-    DatabaseHelper helper = DatabaseHelper.instance;
+    SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
     List<Map> maps = await helper.getSavedSubjects() ?? List<Map>();
 
     if (maps.length > 0) {
@@ -100,7 +100,7 @@ class _SelectorPageState extends State<SelectorPage> {
                           subjects[_searchResult.values.toList()[i].id].isSelected = value;
                           _searchResult[_searchResult.values.toList()[i].id].isSelected = value;
                         });
-                        DatabaseHelper helper = DatabaseHelper.instance;
+                        SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
                         helper.updateSubjectSelection(_searchResult.values.toList()[i].id, value);
                       },
                     );

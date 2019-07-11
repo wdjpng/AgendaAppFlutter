@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'Data.dart';
-import 'database_helpers.dart';
+import 'sqliteDatabaseHelpers.dart';
 import 'Event.dart';
 
 /// This widget is used to edit existing sqlite events. It is opened when the
@@ -107,14 +107,14 @@ class EditorPageState extends State<EditorPage> {
   /// Adds new event to the offline sqlite database.
   void pushEvent(String message) async {
     Event event = new Event(message, selectedDate);
-    DatabaseHelper helper = DatabaseHelper.instance;
+    SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
     int id = await helper.insertEvent(event);
     print('inserted row: $id');
   }
 
   /// Updates an event in the offline sqlite database.
   void updateEvent(Data oldData, String newMessage, DateTime newDateOfEvent){
-    DatabaseHelper helper = DatabaseHelper.instance;
+    SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
     helper.updateEvent(oldData.message, newMessage, newDateOfEvent);
   }
 
@@ -144,7 +144,7 @@ class EditorPageState extends State<EditorPage> {
 
   /// Deletes the event in the offline sqlite database.
   void deleteEvent(Data data) async{
-    DatabaseHelper helper = DatabaseHelper.instance;
+    SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
     int id = await helper.deleteEvent(data.message);
     print('deleted row: $id');
   }
