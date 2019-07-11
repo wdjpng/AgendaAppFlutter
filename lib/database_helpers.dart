@@ -87,13 +87,17 @@ class DatabaseHelper {
 
   /// If the subject is not in the database it will be added as an unselected
   /// subject.
-  void insertSubjectIfAbsent(String id, String name) async {
+  void updateSubject(String id, String name, bool isSelected) async {
     Database db = await database;
     List<Map> result =
         await db.rawQuery('SELECT * FROM subjects WHERE id=?', [id]);
     if (result.length == 0) {
-      db.rawInsert(
-          'INSERT INTO subjects(name, isSelected, id) VALUES(?, ?, ?)', [name, false, id]);
+      db.rawInsert('INSERT INTO subjects(name, isSelected, id) VALUES(?, ?, ?)',
+          [name, false, id]);
+    } else if (isSelected != null){
+      await db.rawUpdate(
+          'UPDATE subjects SET isSelected = ?, name = ? WHERE id = ?' '',
+          [isSelected, name, id]);
     }
   }
 
@@ -121,8 +125,8 @@ class DatabaseHelper {
   /// Updates whether a subject is selected based on its name.
   void updateSubjectSelection(String id, bool newValue) async {
     Database db = await database;
-    await db.rawUpdate('UPDATE subjects SET isSelected = ? WHERE id = ?' '',
-        [newValue, id]);
+    await db.rawUpdate(
+        'UPDATE subjects SET isSelected = ? WHERE id = ?' '', [newValue, id]);
   }
 
   Future<List<Map>> getSavedSubjects() async {
@@ -198,6 +202,7 @@ class DatabaseHelper {
     newEvents.sort((a, b) => a.dateOfEvent.compareTo(b.dateOfEvent));
 
     List<String> messagesOnThisDay = [];
+
     /// Adds all the events of one day to the events map.
     for (var i = 0; i < newEvents.length; i++) {
       if (messagesOnThisDay.length > 0) {

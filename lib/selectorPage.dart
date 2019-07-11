@@ -29,7 +29,7 @@ class _SelectorPageState extends State<SelectorPage> {
   void updateSubjects(List<DocumentSnapshot> snapshot) {
     for (var i = 0; i < snapshot.length; i++) {
       DatabaseHelper helper = DatabaseHelper.instance;
-      helper.insertSubjectIfAbsent(snapshot[i].documentID, snapshot[i]['name']);
+      helper.updateSubject(snapshot[i].documentID, snapshot[i]['name'], subjects.values.toList().length -1 >= i ? subjects.values.toList()[i].isSelected : null);
     }
   }
 
@@ -53,8 +53,8 @@ class _SelectorPageState extends State<SelectorPage> {
         stream: Firestore.instance.collection('subjects').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return LinearProgressIndicator();
-          updateSubjects(snapshot.data.documents);
           _readSubjects();
+          updateSubjects(snapshot.data.documents);
           return new Scaffold(
             appBar: new AppBar(
               title: new Text('AgendaApp'),
