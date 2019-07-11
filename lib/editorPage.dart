@@ -39,6 +39,10 @@ class EditorPageState extends State<EditorPage> {
 
   /// Opens the date selector.
   Future<Null> _selectDate(BuildContext context) async {
+
+    ///Closes the keyboard
+    FocusScope.of(context).requestFocus(new FocusNode());
+
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
@@ -116,6 +120,10 @@ class EditorPageState extends State<EditorPage> {
 
   /// Checks for correct user data, updates the data and shows a success message.
   void eventUpdateHandler(BuildContext context, Data data, String newMessage) {
+
+    ///Closes the keyboard
+    FocusScope.of(context).requestFocus(new FocusNode());
+
     if (!isCorrectUserData(newMessage, context)) {
       return;
     }
@@ -144,6 +152,10 @@ class EditorPageState extends State<EditorPage> {
   /// Asks the user whether he really wants to delete the event and either closes
   /// the windows or calls the [onDeletionConfirmed] method.
   void onDeleteButtonPressed(BuildContext context, Data data) {
+
+    ///Closes the keyboard
+    FocusScope.of(context).requestFocus(new FocusNode());
+
     Alert(
       context: context,
       type: AlertType.warning,

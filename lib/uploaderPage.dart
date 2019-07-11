@@ -37,6 +37,9 @@ class UploaderPageState extends State<UploaderPage> {
 
   /// Opens the date selector.
   Future<Null> _selectDate(BuildContext context) async {
+    ///Closes the keyboard
+    FocusScope.of(context).requestFocus(new FocusNode());
+
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
@@ -110,6 +113,9 @@ class UploaderPageState extends State<UploaderPage> {
   void onUploadButtonPressed(
       BuildContext context, TextEditingController textEditingController) {
     String message = textEditingController.text;
+
+    ///Closes the keyboard
+    FocusScope.of(context).requestFocus(new FocusNode());
 
     if (!isCorrectUserData(message, context)) {
       return;

@@ -73,7 +73,7 @@ class DrawerOnly extends StatelessWidget {
                           builder: (context) => WebViewPage(data: data)));
                 }),
           ],
-        )
+        ),
       ],
     ));
   }
