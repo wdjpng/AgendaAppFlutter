@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 final String tableEvents = 'events';
-final String columnId = '_id';
+final String columnId = 'id';
 final String columnDateOfEvent = 'dateOfEvent';
 final String columnMessage = 'message';
 
@@ -24,7 +24,7 @@ class DatabaseHelper {
   static final _databaseName = "sqliteData.db";
 
   /// Increment this version when you need to change the schema.
-  static final _databaseVersion = 3;
+  static final _databaseVersion = 5;
 
   DatabaseHelper._privateConstructor();
 
@@ -53,13 +53,14 @@ class DatabaseHelper {
   Future _onCreate(Database db, int version) async {
     await db.execute('''
               CREATE TABLE $tableEvents (
-                $columnId INTEGER PRIMARY KEY,
+                $columnId STRING PRIMARY KEY,
                 $columnMessage TEXT NOT NULL,
                 $columnDateOfEvent DATETIME NOT NULL
               )
               ''');
     await db.execute('''
               CREATE TABLE $tableSubjects (
+                $columnId STRING PRIMARY KEY,
                 $columnIsSelected BOOL NOT NULL,
                 $columnName TEXT NOT NULL
               )
@@ -86,13 +87,13 @@ class DatabaseHelper {
 
   /// If the subject is not in the database it will be added as an unselected
   /// subject.
-  void insertSubjectIfAbsent(String name) async {
+  void insertSubjectIfAbsent(String id, String name) async {
     Database db = await database;
     List<Map> result =
-        await db.rawQuery('SELECT * FROM subjects WHERE name=?', [name]);
+        await db.rawQuery('SELECT * FROM subjects WHERE id=?', [id]);
     if (result.length == 0) {
       db.rawInsert(
-          'INSERT INTO subjects(name, isSelected) VALUES(?, ?)', [name, false]);
+          'INSERT INTO subjects(name, isSelected, id) VALUES(?, ?, ?)', [name, false, id]);
     }
   }
 
@@ -118,10 +119,10 @@ class DatabaseHelper {
   }
 
   /// Updates whether a subject is selected based on its name.
-  void updateSubjectSelection(String name, bool newValue) async {
+  void updateSubjectSelection(String id, bool newValue) async {
     Database db = await database;
-    await db.rawUpdate('UPDATE subjects SET isSelected = ? WHERE name = ?' '',
-        [newValue, name]);
+    await db.rawUpdate('UPDATE subjects SET isSelected = ? WHERE id = ?' '',
+        [newValue, id]);
   }
 
   Future<List<Map>> getSavedSubjects() async {

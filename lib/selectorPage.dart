@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'database_helpers.dart';
+import 'package:calendar1/Subject.dart';
 
 /// This widget is used to select the subjects whose events the user wants to
 /// see in the [EventPage].
@@ -11,11 +12,11 @@ class SelectorPage extends StatefulWidget {
 
 class _SelectorPageState extends State<SelectorPage> {
   /// The search result for the current search query as a list of subject names
-  List<String> _searchResult = [];
+  Map<String, Subject> _searchResult = {};
 
   /// All the subjects the user can select. The String is the name of the subject
   /// and the whether it is selected is saved in the bool
-  Map<String, bool> subjects = {};
+ Map<String, Subject> subjects = {};
 
   TextEditingController controller = new TextEditingController();
 
@@ -28,7 +29,7 @@ class _SelectorPageState extends State<SelectorPage> {
   void updateSubjects(List<DocumentSnapshot> snapshot) {
     for (var i = 0; i < snapshot.length; i++) {
       DatabaseHelper helper = DatabaseHelper.instance;
-      helper.insertSubjectIfAbsent(snapshot[i]['name']);
+      helper.insertSubjectIfAbsent(snapshot[i].documentID, snapshot[i]['name']);
     }
   }
 
@@ -39,10 +40,9 @@ class _SelectorPageState extends State<SelectorPage> {
     List<Map> maps = await helper.getSavedSubjects() ?? List<Map>();
 
     if (maps.length > 0) {
-      subjects = Map<String, bool>();
+      subjects = {};
       for (var i = 0; i < maps.length; i++) {
-        bool isTrue = maps[i][columnIsSelected] == 1;
-        subjects.putIfAbsent(maps[i][columnName], () => isTrue);
+        subjects.putIfAbsent(maps[i][columnId], () => new Subject( maps[i][columnId],  maps[i][columnName],  maps[i][columnIsSelected] == 1));
       }
     }
   }
@@ -93,14 +93,15 @@ class _SelectorPageState extends State<SelectorPage> {
                   itemCount: _searchResult.length,
                   itemBuilder: (context, i) {
                     return new CheckboxListTile(
-                      title: new Text(_searchResult[i]),
-                      value: subjects[_searchResult[i]],
+                      title: new Text(_searchResult.values.toList()[i].name),
+                      value: _searchResult.values.toList()[i].isSelected,
                       onChanged: (bool value) {
                         setState(() {
-                          subjects[_searchResult[i]] = value;
+                          subjects[_searchResult.values.toList()[i].id].isSelected = value;
+                          _searchResult[_searchResult.values.toList()[i].id].isSelected = value;
                         });
                         DatabaseHelper helper = DatabaseHelper.instance;
-                        helper.updateSubjectSelection(_searchResult[i], value);
+                        helper.updateSubjectSelection(_searchResult.values.toList()[i].id, value);
                       },
                     );
                   },
@@ -120,12 +121,11 @@ class _SelectorPageState extends State<SelectorPage> {
     }
 
     for (var i = 0; i < subjects.keys.length; i++) {
-      if (subjects.keys.elementAt(i).toString().contains(searchText)) {
-        _searchResult.add(subjects.keys.elementAt(i).toString());
+      if (subjects[subjects.keys.elementAt(i)].name.contains(searchText)) {
+        _searchResult.putIfAbsent(subjects[subjects.keys.elementAt(i)].id, () => subjects[subjects.keys.elementAt(i)]);
       }
     }
 
-    _searchResult.sort();
     setState(() {});
   }
 }
