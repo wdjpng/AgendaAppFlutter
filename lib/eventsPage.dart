@@ -162,6 +162,7 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   Widget _buildTableCalendar() {
     return TableCalendar(
       events: visibleEvents,
+      locale: 'de_CH',
       initialCalendarFormat: CalendarFormat.month,
       formatAnimation: FormatAnimation.slide,
       startingDayOfWeek: StartingDayOfWeek.monday,

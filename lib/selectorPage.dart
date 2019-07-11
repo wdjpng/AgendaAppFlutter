@@ -57,7 +57,7 @@ class _SelectorPageState extends State<SelectorPage> {
           _readSubjects();
           return new Scaffold(
             appBar: new AppBar(
-              title: new Text('Home'),
+              title: new Text('AgendaApp'),
               elevation: 0.0,
             ),
             body: new Column(
@@ -73,7 +73,7 @@ class _SelectorPageState extends State<SelectorPage> {
                         title: new TextField(
                           controller: controller,
                           decoration: new InputDecoration(
-                              hintText: 'Search', border: InputBorder.none),
+                              hintText: 'Suchen', border: InputBorder.none),
                           onChanged: onSearchTextChanged,
                         ),
                         trailing: new IconButton(
