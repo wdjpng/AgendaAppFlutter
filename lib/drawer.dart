@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'selectorPage.dart';
+import 'settingsPage.dart';
 import 'eventsPage.dart';
 import 'WebView.dart';
 import 'Data.dart';
@@ -44,17 +44,6 @@ class DrawerOnly extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (context) => EventsPage(title: 'AgendaApp')));
             }),
-        new ListTile(
-            title: new Text("Fächer auswählen"),
-            leading: new Icon(Icons.rate_review),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SelectorPage()));
-            }),
-        Divider(
-          height: 5.0,
-        ),
         ExpansionTile(
           leading: new Icon(Icons.info),
           title: Text("Informationen"),
@@ -74,6 +63,17 @@ class DrawerOnly extends StatelessWidget {
                 }),
           ],
         ),
+        Divider(
+          height: 20.0,
+        ),
+        new ListTile(
+            title: new Text("Einstellungen"),
+            leading: new Icon(Icons.settings),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()));
+            }),
       ],
     ));
   }
