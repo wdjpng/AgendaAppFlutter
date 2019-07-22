@@ -45,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
           new RaisedButton(
             onPressed: () => _openSelector(context),
             child: const Text(
-              'Fàcher auswählen',
+              'Fächer auswählen',
             ),
           ),
           new RaisedButton(
