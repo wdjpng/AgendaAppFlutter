@@ -1,3 +1,4 @@
+import 'package:calendar1/models/Data.dart';
 import 'package:calendar1/pages/loginPage.dart';
 import 'package:calendar1/pages/selectorPage.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  Data data = new Data();
+
   @override
   void initState() {
     super.initState();
@@ -18,8 +21,8 @@ class _SettingsPageState extends State<SettingsPage> {
         context, MaterialPageRoute(builder: (context) => SelectorPage()));
   }
 
-  void _onSignIn() {
-    Navigator.pop(context);
+  void _onSignIn() async {
+
   }
 
   void _handleSignIn() {
@@ -28,7 +31,7 @@ class _SettingsPageState extends State<SettingsPage> {
         MaterialPageRoute(
             builder: (context) =>
                 LoginPage(
-                  onSignedIn: _onSignIn,
+                    onSignedIn: _onSignIn, data: data
                 )));
   }
 

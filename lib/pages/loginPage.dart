@@ -1,12 +1,12 @@
-import 'package:calendar1/services/authentication.dart';
+import 'package:calendar1/models/Data.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({this.auth, this.onSignedIn});
+  LoginPage({this.onSignedIn, this.data});
 
-  final BaseAuth auth;
   final VoidCallback onSignedIn;
-
+  final Data data;
+  
   @override
   State<StatefulWidget> createState() => new _LoginPageState();
 }
@@ -20,7 +20,6 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isIos;
   bool _isLoading;
-  BaseAuth _auth = new Auth();
 
   // Check if form is valid before perform login or signup
   bool _validateAndSave() {
@@ -41,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
     if (_validateAndSave()) {
       String userId = "";
       try {
-        userId = await _auth.signIn(_email, _password);
+        userId = await widget.data.auth.signIn(_email, _password);
         print('Signed in: $userId');
 
         setState(() {

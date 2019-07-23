@@ -1,3 +1,5 @@
+import 'package:calendar1/services/authentication.dart';
+
 /// This class is used to transmit data in a single object.
 class Data {
   Data();
@@ -6,4 +8,5 @@ class Data {
   String message = '';
   String url = 'flutter.io';
   bool isInEditMode = false;
+  BaseAuth auth = new Auth();
 }
