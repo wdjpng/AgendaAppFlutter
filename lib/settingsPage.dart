@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'selectorPage.dart';
+import 'loginPage.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -17,8 +18,13 @@ class _SettingsPageState extends State<SettingsPage> {
         context, MaterialPageRoute(builder: (context) => SelectorPage()));
   }
 
+  void _onSignIn(){
+    Navigator.pop(context);
+  }
+
   void _handleSignIn(){
-    //TODO
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginPage(onSignedIn: _onSignIn,)));
   }
 
   @override
