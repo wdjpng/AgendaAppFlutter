@@ -1,5 +1,5 @@
-import 'Event.dart';
-import 'eventsPage.dart';
+import 'package:calendar1/models/Event.dart';
+import 'package:calendar1/widgets/eventsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'sqliteDatabaseHelpers.dart';

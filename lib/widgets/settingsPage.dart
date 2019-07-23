@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'selectorPage.dart';
+import 'package:calendar1/widgets/selectorPage.dart';
 import 'loginPage.dart';
 
 class SettingsPage extends StatefulWidget {

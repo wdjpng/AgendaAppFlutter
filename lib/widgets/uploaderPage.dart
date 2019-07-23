@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'Data.dart';
-import 'sqliteDatabaseHelpers.dart';
-import 'Event.dart';
+import 'package:calendar1/models/Data.dart';
+import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
+import 'package:calendar1/models/Event.dart';
 
 /// This widget is used to add new sqlite events. It is opened when the
 /// user clicks the floating button in the [EventPage].

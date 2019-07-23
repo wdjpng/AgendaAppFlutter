@@ -1,4 +1,4 @@
-import 'sqliteDatabaseHelpers.dart';
+import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
 
 /// A simple class to handle subjects.
 class Subject implements Comparable<Subject>{

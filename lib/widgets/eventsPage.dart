@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'Event.dart';
+import 'package:calendar1/models/Event.dart';
 import 'uploaderPage.dart';
-import 'Data.dart';
-import 'sqliteDatabaseHelpers.dart';
+import 'package:calendar1/models/Data.dart';
+import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
 import 'drawer.dart';
-import 'editorPage.dart';
-import 'fireStoreHelpers.dart';
+import 'package:calendar1/widgets/editorPage.dart';
+import 'package:calendar1/services/fireStoreHelpers.dart';
 
 DateTime currentDateTime = DateTime.now();
 

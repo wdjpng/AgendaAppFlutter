@@ -3,8 +3,8 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
-import 'Event.dart';
-import 'eventsPage.dart';
+import 'package:calendar1/models/Event.dart';
+import 'package:calendar1/widgets/eventsPage.dart';
 
 final String tableEvents = 'events';
 final String columnId = 'id';

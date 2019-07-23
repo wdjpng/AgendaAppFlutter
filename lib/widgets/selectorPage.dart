@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'sqliteDatabaseHelpers.dart';
-import 'package:calendar1/Subject.dart';
+import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
+import 'package:calendar1/models/Subject.dart';
 
 /// This widget is used to select the subjects whose events the user wants to
 /// see in the [EventPage].
