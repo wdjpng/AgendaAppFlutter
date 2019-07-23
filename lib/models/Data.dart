@@ -8,5 +8,7 @@ class Data {
   String message = '';
   String url = 'flutter.io';
   bool isInEditMode = false;
+  bool isInAdminMode = false;
   BaseAuth auth = new Auth();
+  List<String> subjects = [];
 }

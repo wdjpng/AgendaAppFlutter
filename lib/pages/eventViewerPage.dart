@@ -21,6 +21,7 @@ class EventViewerPage extends StatefulWidget {
 
 class EventViewerPageState extends State<EventViewerPage> {
   Data data;
+  String selectedSubject;
 
   /// This key is used to be able to show snackbars.
   final key = new GlobalKey<ScaffoldState>();
@@ -210,6 +211,22 @@ class EventViewerPageState extends State<EventViewerPage> {
                   decoration: InputDecoration(
                       border: OutlineInputBorder(), labelText: 'Nachricht')),
             ),
+            data.isInAdminMode ?  new DropdownButton<String>(
+              value: selectedSubject,
+              hint: Text('Klasse auswählen'),
+              items: data.subjects
+                  .map((label) => DropdownMenuItem(
+                child: Text(label),
+                value: label,
+              ))
+                  .toList(),
+              onChanged: (String newValue) {
+                setState(() {
+                  selectedSubject = newValue;
+                });
+              },
+              //TODO find better way then empty sized box
+            ) : SizedBox(height: 1),
             SizedBox(height: 20),
             data.isInEditMode ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
