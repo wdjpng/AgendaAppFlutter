@@ -1,7 +1,7 @@
+import 'package:calendar1/models/Subject.dart';
+import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
-import 'package:calendar1/models/Subject.dart';
 
 /// This widget is used to select the subjects whose events the user wants to
 /// see in the [EventPage].
@@ -16,7 +16,7 @@ class _SelectorPageState extends State<SelectorPage> {
 
   /// All the subjects the user can select. The String is the name of the subject
   /// and the whether it is selected is saved in the bool
- Map<String, Subject> subjects = {};
+  Map<String, Subject> subjects = {};
 
   TextEditingController controller = new TextEditingController();
 
@@ -29,7 +29,14 @@ class _SelectorPageState extends State<SelectorPage> {
   void updateSubjects(List<DocumentSnapshot> snapshot) {
     for (var i = 0; i < snapshot.length; i++) {
       SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
-      helper.updateSubject(snapshot[i].documentID, snapshot[i]['name'], subjects.values.toList().length -1 >= i ? subjects.values.toList()[i].isSelected : null);
+      helper.updateSubject(
+          snapshot[i].documentID,
+          snapshot[i]['name'],
+          subjects.values
+              .toList()
+              .length - 1 >= i
+              ? subjects.values.toList()[i].isSelected
+              : null);
     }
   }
 
@@ -42,7 +49,11 @@ class _SelectorPageState extends State<SelectorPage> {
     if (maps.length > 0) {
       subjects = {};
       for (var i = 0; i < maps.length; i++) {
-        subjects.putIfAbsent(maps[i][columnId], () => new Subject( maps[i][columnId],  maps[i][columnName],  maps[i][columnIsSelected] == 1));
+        subjects.putIfAbsent(
+            maps[i][columnId],
+                () =>
+            new Subject(maps[i][columnId], maps[i][columnName],
+                maps[i][columnIsSelected] == 1));
       }
     }
   }
@@ -62,6 +73,7 @@ class _SelectorPageState extends State<SelectorPage> {
             ),
             body: new Column(
               children: <Widget>[
+
                 /// The container for the search bar
                 new Container(
                   color: Theme.of(context).primaryColor,
@@ -87,25 +99,30 @@ class _SelectorPageState extends State<SelectorPage> {
                     ),
                   ),
                 ),
+
                 /// The expander for the ListView
                 new Expanded(
                     child: new ListView.builder(
-                  itemCount: _searchResult.length,
-                  itemBuilder: (context, i) {
-                    return new CheckboxListTile(
-                      title: new Text(_searchResult.values.toList()[i].name),
-                      value: _searchResult.values.toList()[i].isSelected,
-                      onChanged: (bool value) {
-                        setState(() {
-                          subjects[_searchResult.values.toList()[i].id].isSelected = value;
-                          _searchResult[_searchResult.values.toList()[i].id].isSelected = value;
-                        });
-                        SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
-                        helper.updateSubjectSelection(_searchResult.values.toList()[i].id, value);
+                      itemCount: _searchResult.length,
+                      itemBuilder: (context, i) {
+                        return new CheckboxListTile(
+                          title: new Text(_searchResult.values.toList()[i].name),
+                          value: _searchResult.values.toList()[i].isSelected,
+                          onChanged: (bool value) {
+                            setState(() {
+                              subjects[_searchResult.values.toList()[i].id]
+                                  .isSelected = value;
+                              _searchResult[_searchResult.values.toList()[i].id]
+                                  .isSelected = value;
+                            });
+                            SqliteDatabaseHelper helper =
+                                SqliteDatabaseHelper.instance;
+                            helper.updateSubjectSelection(
+                                _searchResult.values.toList()[i].id, value);
+                          },
+                        );
                       },
-                    );
-                  },
-                )),
+                    )),
               ],
             ),
           );
@@ -122,7 +139,8 @@ class _SelectorPageState extends State<SelectorPage> {
 
     for (var i = 0; i < subjects.keys.length; i++) {
       if (subjects[subjects.keys.elementAt(i)].name.contains(searchText)) {
-        _searchResult.putIfAbsent(subjects[subjects.keys.elementAt(i)].id, () => subjects[subjects.keys.elementAt(i)]);
+        _searchResult.putIfAbsent(subjects[subjects.keys.elementAt(i)].id,
+                () => subjects[subjects.keys.elementAt(i)]);
       }
     }
 

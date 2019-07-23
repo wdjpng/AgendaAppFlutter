@@ -1,7 +1,7 @@
 import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
 
 /// A simple class to handle events.
-class Event implements Comparable<Event>{
+class Event implements Comparable<Event> {
   String publisher;
   int type;
   int id;
@@ -12,14 +12,13 @@ class Event implements Comparable<Event>{
   DateTime dateOfEvent;
 
   /// Compares to events based on their date
-  int compareTo(Event other){
+  int compareTo(Event other) {
     return dateOfEvent.compareTo(other.dateOfEvent);
   }
 
-
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
-      columnMessage:message,
+      columnMessage: message,
       columnDateOfEvent: dateOfEvent.toIso8601String()
     };
     if (id != null) {
@@ -30,14 +29,13 @@ class Event implements Comparable<Event>{
 
   ///Creates an event based on a map
   Event.fromMap(Map<String, dynamic> map) {
-    dateOfEvent= DateTime.parse(map[columnDateOfEvent]);
-    message=  map[columnMessage];
+    dateOfEvent = DateTime.parse(map[columnDateOfEvent]);
+    message = map[columnMessage];
     subject = map[subject];
     id = map[columnId];
   }
 
-
-  Event( String message, DateTime dateOfEvent) {
+  Event(String message, DateTime dateOfEvent) {
     this.type = type;
     this.publisher = publisher;
     this.schoolSubject = schoolSubject;
@@ -46,6 +44,4 @@ class Event implements Comparable<Event>{
     this.dateOfEvent = dateOfEvent;
     this.datePublished = datePublished;
   }
-
-
 }

@@ -1,10 +1,11 @@
-import 'dart:io';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:async';
+import 'dart:io';
+
 import 'package:calendar1/models/Event.dart';
 import 'package:calendar1/widgets/eventsPage.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 final String tableEvents = 'events';
 final String columnId = 'id';
@@ -26,7 +27,8 @@ class SqliteDatabaseHelper {
 
   SqliteDatabaseHelper._privateConstructor();
 
-  static final SqliteDatabaseHelper instance = SqliteDatabaseHelper._privateConstructor();
+  static final SqliteDatabaseHelper instance =
+  SqliteDatabaseHelper._privateConstructor();
 
   static Database _database;
 
@@ -92,7 +94,7 @@ class SqliteDatabaseHelper {
     if (result.length == 0) {
       db.rawInsert('INSERT INTO subjects(name, isSelected, id) VALUES(?, ?, ?)',
           [name, false, id]);
-    } else if (isSelected != null){
+    } else if (isSelected != null) {
       await db.rawUpdate(
           'UPDATE subjects SET isSelected = ?, name = ? WHERE id = ?' '',
           [isSelected, name, id]);

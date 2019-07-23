@@ -1,7 +1,8 @@
 import 'package:calendar1/models/Event.dart';
 import 'package:calendar1/widgets/eventsPage.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
 import 'sqliteDatabaseHelpers.dart';
 
 final String tableEvents = 'events';
@@ -14,7 +15,6 @@ final String columnIsSelected = 'isSelected';
 final String columnName = 'name';
 
 class FirestoreHelper {
-
   /// Updates the visible events based on the online firestore and the offline
   /// sqlite events.
   static void updateEvents(

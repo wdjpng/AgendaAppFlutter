@@ -1,9 +1,10 @@
 import 'dart:async';
+
+import 'package:calendar1/models/Data.dart';
+import 'package:calendar1/models/Event.dart';
+import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:calendar1/models/Data.dart';
-import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
-import 'package:calendar1/models/Event.dart';
 
 /// This widget is used to edit existing sqlite events. It is opened when the
 /// user clicks on a sqlite event in the [EventPage].
@@ -19,6 +20,7 @@ class EditorPage extends StatefulWidget {
 
 class EditorPageState extends State<EditorPage> {
   Data data;
+
   /// This key is used to be able to show snackbars.
   final key = new GlobalKey<ScaffoldState>();
 
@@ -39,7 +41,6 @@ class EditorPageState extends State<EditorPage> {
 
   /// Opens the date selector.
   Future<Null> _selectDate(BuildContext context) async {
-
     ///Closes the keyboard
     FocusScope.of(context).requestFocus(new FocusNode());
 
@@ -98,7 +99,6 @@ class EditorPageState extends State<EditorPage> {
     return true;
   }
 
-
   void popContextTwice() {
     Navigator.pop(context);
     Navigator.pop(context);
@@ -113,14 +113,13 @@ class EditorPageState extends State<EditorPage> {
   }
 
   /// Updates an event in the offline sqlite database.
-  void updateEvent(Data oldData, String newMessage, DateTime newDateOfEvent){
+  void updateEvent(Data oldData, String newMessage, DateTime newDateOfEvent) {
     SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
     helper.updateEvent(oldData.message, newMessage, newDateOfEvent);
   }
 
   /// Checks for correct user data, updates the data and shows a success message.
   void eventUpdateHandler(BuildContext context, Data data, String newMessage) {
-
     ///Closes the keyboard
     FocusScope.of(context).requestFocus(new FocusNode());
 
@@ -130,20 +129,19 @@ class EditorPageState extends State<EditorPage> {
 
     updateEvent(data, newMessage, selectedDate);
 
-    showAlert(
-        context, "Eintrag erfolgreich verändert", "", AlertType.success);
+    showAlert(context, "Eintrag erfolgreich verändert", "", AlertType.success);
     FocusScope.of(context).requestFocus(new FocusNode());
     popContextTwice();
   }
 
   /// Deletes an event and closes the alert as well as the input form.
-  void onDeletionConfirmed(Data data, BuildContext context){
+  void onDeletionConfirmed(Data data, BuildContext context) {
     deleteEvent(data);
     popContextTwice();
   }
 
   /// Deletes the event in the offline sqlite database.
-  void deleteEvent(Data data) async{
+  void deleteEvent(Data data) async {
     SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
     int id = await helper.deleteEvent(data.message);
     print('deleted row: $id');
@@ -152,7 +150,6 @@ class EditorPageState extends State<EditorPage> {
   /// Asks the user whether he really wants to delete the event and either closes
   /// the windows or calls the [onDeletionConfirmed] method.
   void onDeleteButtonPressed(BuildContext context, Data data) {
-
     ///Closes the keyboard
     FocusScope.of(context).requestFocus(new FocusNode());
 
@@ -165,14 +162,14 @@ class EditorPageState extends State<EditorPage> {
         DialogButton(
           color: Colors.green,
           child: Text(
-          "NEIN",
+            "NEIN",
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
           onPressed: () => Navigator.pop(context),
           width: 120,
         ),
         DialogButton(
-          color : Colors.red,
+          color: Colors.red,
           child: Text(
             "JA",
             style: TextStyle(color: Colors.white, fontSize: 20),
@@ -184,11 +181,10 @@ class EditorPageState extends State<EditorPage> {
     ).show();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key:key,
+      key: key,
       appBar: AppBar(
         title: Text(widget.title),
       ),
@@ -227,7 +223,9 @@ class EditorPageState extends State<EditorPage> {
                 ),
                 SizedBox(width: 35),
                 FloatingActionButton(
-                  onPressed: () => eventUpdateHandler(context, data, messageTextController.text),
+                  onPressed: () =>
+                      eventUpdateHandler(
+                          context, data, messageTextController.text),
                   tooltip: 'Bestätigen',
                   child: Icon(Icons.done),
                   heroTag: 'floatingActionButton0',
