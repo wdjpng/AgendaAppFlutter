@@ -106,4 +106,9 @@ class FirestoreHelper {
 
     EventsPageState.visibleEvents = EventsPageState.events;
   }
+
+  static void pushEvent(String message, DateTime dateOfEvent, String subject){
+    Firestore.instance.collection('events').document()
+        .setData({ 'message': message, 'dateOfEvent': dateOfEvent, 'subject' : subject, 'datePublished' : DateTime.now(), 'datePublished' : DateTime.now()});
+  }
 }

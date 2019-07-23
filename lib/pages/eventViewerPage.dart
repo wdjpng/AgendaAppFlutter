@@ -6,6 +6,7 @@ import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:calendar1/otherWidgets/alertShower.dart';
+import 'package:calendar1/services/fireStoreHelpers.dart';
 
 /// This widget is used to edit existing sqlite events. It is opened when the
 /// user clicks on a sqlite event in the [EventPage].
@@ -86,11 +87,16 @@ class EventViewerPageState extends State<EventViewerPage> {
   }
 
   /// Adds new event to the offline sqlite database.
-  void pushEvent(String message) async {
+  void pushEventOffline(String message) async {
     Event event = new Event(message, selectedDate);
     SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
     int id = await helper.insertEvent(event);
     print('inserted row: $id');
+  }
+
+  /// Adds new event to the online firestore database.
+  void pushEventOnline(String message) async {
+    FirestoreHelper.pushEvent(message, selectedDate, selectedSubject);
   }
 
   /// Updates an event in the offline sqlite database.
@@ -110,7 +116,8 @@ class EventViewerPageState extends State<EventViewerPage> {
 
     updateEvent(data, newMessage, selectedDate);
 
-    AlertShower.showAlert(context, "Eintrag erfolgreich verändert", "", AlertType.success);
+    AlertShower.showAlert(
+        context, "Eintrag erfolgreich verändert", "", AlertType.success);
     FocusScope.of(context).requestFocus(new FocusNode());
     popContextTwice();
   }
@@ -130,8 +137,8 @@ class EventViewerPageState extends State<EventViewerPage> {
 
   /// Checks for correct user data, pushes new event to sqlite database and
   /// shows a success message.
-  void onUploadButtonPressed(BuildContext context,
-      TextEditingController textEditingController) {
+  void onUploadButtonPressed(
+      BuildContext context, TextEditingController textEditingController) {
     String message = textEditingController.text;
 
     ///Closes the keyboard
@@ -141,7 +148,12 @@ class EventViewerPageState extends State<EventViewerPage> {
       return;
     }
 
-    pushEvent(message);
+    if (data.isInAdminMode) {
+      pushEventOnline(message);
+    } else {
+      pushEventOffline(message);
+    }
+
     AlertShower.showAlert(
         context, "DATEN ERFOLGREICH HOCHGELADEN", "", AlertType.success);
     FocusScope.of(context).requestFocus(new FocusNode());
@@ -211,49 +223,52 @@ class EventViewerPageState extends State<EventViewerPage> {
                   decoration: InputDecoration(
                       border: OutlineInputBorder(), labelText: 'Nachricht')),
             ),
-            data.isInAdminMode ?  new DropdownButton<String>(
-              value: selectedSubject,
-              hint: Text('Klasse auswählen'),
-              items: data.subjects
-                  .map((label) => DropdownMenuItem(
-                child: Text(label),
-                value: label,
-              ))
-                  .toList(),
-              onChanged: (String newValue) {
-                setState(() {
-                  selectedSubject = newValue;
-                });
-              },
-              //TODO find better way then empty sized box
-            ) : SizedBox(height: 1),
+            data.isInAdminMode
+                ? new DropdownButton<String>(
+                    value: selectedSubject,
+                    hint: Text('Klasse auswählen'),
+                    items: data.subjects
+                        .map((label) => DropdownMenuItem(
+                              child: Text(label),
+                              value: label,
+                            ))
+                        .toList(),
+                    onChanged: (String newValue) {
+                      setState(() {
+                        selectedSubject = newValue;
+                      });
+                    },
+                    //TODO find better way then empty sized box
+                  )
+                : SizedBox(height: 1),
             SizedBox(height: 20),
-            data.isInEditMode ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton(
-                  onPressed: () => onDeleteButtonPressed(context, data),
-                  tooltip: 'Löschen',
-                  child: Icon(Icons.delete),
-                  backgroundColor: Colors.red,
-                  heroTag: 'floatingActionButton1',
-                ),
-                SizedBox(width: 35),
-                FloatingActionButton(
-                  onPressed: () =>
-                      eventUpdateHandler(
-                          context, data, messageTextController.text),
-                  tooltip: 'Bestätigen',
-                  child: Icon(Icons.done),
-                  heroTag: 'floatingActionButton0',
-                )
-              ],
-            ) : FloatingActionButton(
-              onPressed: () =>
-                  onUploadButtonPressed(context, messageTextController),
-              tooltip: 'Bestätigen',
-              child: Icon(Icons.done),
-            ),
+            data.isInEditMode
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FloatingActionButton(
+                        onPressed: () => onDeleteButtonPressed(context, data),
+                        tooltip: 'Löschen',
+                        child: Icon(Icons.delete),
+                        backgroundColor: Colors.red,
+                        heroTag: 'floatingActionButton1',
+                      ),
+                      SizedBox(width: 35),
+                      FloatingActionButton(
+                        onPressed: () => eventUpdateHandler(
+                            context, data, messageTextController.text),
+                        tooltip: 'Bestätigen',
+                        child: Icon(Icons.done),
+                        heroTag: 'floatingActionButton0',
+                      )
+                    ],
+                  )
+                : FloatingActionButton(
+                    onPressed: () =>
+                        onUploadButtonPressed(context, messageTextController),
+                    tooltip: 'Bestätigen',
+                    child: Icon(Icons.done),
+                  ),
           ],
         ),
       ),
