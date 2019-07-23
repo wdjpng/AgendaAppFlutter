@@ -1,4 +1,4 @@
-import 'package:calendar1/widgets/eventsPage.dart';
+import 'package:calendar1/pages/eventsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 

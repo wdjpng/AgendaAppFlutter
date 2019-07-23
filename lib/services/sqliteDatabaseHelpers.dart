@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:calendar1/models/Event.dart';
-import 'package:calendar1/widgets/eventsPage.dart';
+import 'package:calendar1/pages/eventsPage.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';

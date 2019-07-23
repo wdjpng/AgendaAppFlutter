@@ -1,7 +1,6 @@
-import 'package:calendar1/widgets/selectorPage.dart';
+import 'package:calendar1/pages/loginPage.dart';
+import 'package:calendar1/pages/selectorPage.dart';
 import 'package:flutter/material.dart';
-
-import 'loginPage.dart';
 
 class SettingsPage extends StatefulWidget {
   @override

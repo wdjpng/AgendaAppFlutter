@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:calendar1/widgets/settingsPage.dart';
-import 'package:calendar1/widgets/eventsPage.dart';
-import 'WebView.dart';
 import 'package:calendar1/models/Data.dart';
+import 'package:calendar1/pages/WebView.dart';
+import 'package:calendar1/pages/eventsPage.dart';
+import 'package:calendar1/pages/settingsPage.dart';
+import 'package:flutter/material.dart';
 
 /// The [Drawer] used in the [EventsPageState]
 class DrawerOnly extends StatelessWidget {
