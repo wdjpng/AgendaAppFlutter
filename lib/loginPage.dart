@@ -51,7 +51,6 @@ class _LoginPageState extends State<LoginPage> {
         if (userId != null && userId.length > 0) {
           widget.onSignedIn();
         }
-
       } catch (e) {
         print('Error: $e');
         setState(() {
@@ -64,7 +63,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
   }
-
 
   @override
   void initState() {
@@ -88,14 +86,17 @@ class _LoginPageState extends State<LoginPage> {
         ));
   }
 
-  Widget _showCircularProgress(){
+  Widget _showCircularProgress() {
     if (_isLoading) {
       return Center(child: CircularProgressIndicator());
-    } return Container(height: 0.0, width: 0.0,);
-
+    }
+    return Container(
+      height: 0.0,
+      width: 0.0,
+    );
   }
 
-  Widget _showBody(){
+  Widget _showBody() {
     return new Container(
         padding: EdgeInsets.all(16.0),
         child: new Form(
@@ -107,6 +108,7 @@ class _LoginPageState extends State<LoginPage> {
               _showEmailInput(),
               _showPasswordInput(),
               _showPrimaryButton(),
+              Divider(height: 20),
               _showErrorMessage(),
             ],
           ),
@@ -196,13 +198,15 @@ class _LoginPageState extends State<LoginPage> {
           height: 40.0,
           child: new RaisedButton(
             elevation: 5.0,
-            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0)),
             color: Colors.blue,
-            child:
-                new Text('Login',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white),
-
-                ), onPressed: _validateAndSubmit,),
+            child: new Text(
+              'Login',
+              style: new TextStyle(fontSize: 20.0, color: Colors.white),
+            ),
+            onPressed: _validateAndSubmit,
+          ),
         ));
   }
 }
