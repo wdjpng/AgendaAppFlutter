@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
     return false;
   }
 
-  // Perform login or signup
+  // Perform login or sign up
   void _validateAndSubmit() async {
     setState(() {
       _errorMessage = "";
@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
     _isIos = Theme.of(context).platform == TargetPlatform.iOS;
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text('Flutter login demo'),
+          title: new Text('AgendaApp'),
         ),
         body: Stack(
           children: <Widget>[
@@ -157,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
             setState(() {
               _isLoading = false;
             });
-            return 'Email can\'t be empty';
+            return 'Bitte eine Email-Adresse eingeben';
           }
         },
         onSaved: (value) => _email = value,
@@ -173,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
         obscureText: true,
         autofocus: false,
         decoration: new InputDecoration(
-            hintText: 'Password',
+            hintText: 'Passwort',
             icon: new Icon(
               Icons.lock,
               color: Colors.grey,
@@ -183,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
             setState(() {
               _isLoading = false;
             });
-            return 'Email can\'t be empty';
+            return 'Bitte geben Sie ein Passwort ein';
           }
         },
         onSaved: (value) => _password = value,
