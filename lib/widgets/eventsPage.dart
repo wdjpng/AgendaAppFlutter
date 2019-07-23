@@ -1,13 +1,13 @@
+import 'package:calendar1/models/Data.dart';
+import 'package:calendar1/models/Event.dart';
+import 'package:calendar1/services/fireStoreHelpers.dart';
+import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
+import 'package:calendar1/widgets/eventViewerPage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:calendar1/models/Event.dart';
-import 'uploaderPage.dart';
-import 'package:calendar1/models/Data.dart';
-import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
+
 import 'drawer.dart';
-import 'package:calendar1/widgets/editorPage.dart';
-import 'package:calendar1/services/fireStoreHelpers.dart';
 
 DateTime currentDateTime = DateTime.now();
 
@@ -82,10 +82,12 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   void onWriteOwnMessageButtonPressed(BuildContext context) {
     Data data = new Data();
     data.dateOfEvent = _selectedDay;
+    data.isInEditMode = false;
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => UploaderPage(
+          builder: (context) =>
+              EventViewerPage(
                 data: data,
               )),
     );
@@ -104,16 +106,18 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   }
 
   /// Called when the user clicks on an event, checks wether the user can edit
-  /// it and if so opens the [EditorPage] to edit that message.
+  /// it and if so opens the [EventViewerPage] to edit that message.
   void onEventPressed(BuildContext context, String message) {
     if (isEventEditableByUser(message)) {
       Data data = new Data();
       data.dateOfEvent = _selectedDay;
       data.message = message;
+      data.isInEditMode = true;
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => EditorPage(
+            builder: (context) =>
+                EventViewerPage(
                   data: data,
                 )),
       );

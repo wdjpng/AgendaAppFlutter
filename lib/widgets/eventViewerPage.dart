@@ -8,23 +8,23 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 /// This widget is used to edit existing sqlite events. It is opened when the
 /// user clicks on a sqlite event in the [EventPage].
-class EditorPage extends StatefulWidget {
+class EventViewerPage extends StatefulWidget {
   final Data data;
   final String title = "AgendaApp";
 
-  EditorPage({Key key, title, this.data}) : super(key: key);
+  EventViewerPage({Key key, title, this.data}) : super(key: key);
 
   @override
-  EditorPageState createState() => EditorPageState(data);
+  EventViewerPageState createState() => EventViewerPageState(data);
 }
 
-class EditorPageState extends State<EditorPage> {
+class EventViewerPageState extends State<EventViewerPage> {
   Data data;
 
   /// This key is used to be able to show snackbars.
   final key = new GlobalKey<ScaffoldState>();
 
-  EditorPageState(Data data) {
+  EventViewerPageState(Data data) {
     this.data = data;
   }
 
@@ -147,6 +147,26 @@ class EditorPageState extends State<EditorPage> {
     print('deleted row: $id');
   }
 
+  /// Checks for correct user data, pushes new event to sqlite database and
+  /// shows a success message.
+  void onUploadButtonPressed(BuildContext context,
+      TextEditingController textEditingController) {
+    String message = textEditingController.text;
+
+    ///Closes the keyboard
+    FocusScope.of(context).requestFocus(new FocusNode());
+
+    if (!isCorrectUserData(message, context)) {
+      return;
+    }
+
+    pushEvent(message);
+    showAlert(
+        context, "DATEN ERFOLGREICH HOCHGELADEN", "", AlertType.success);
+    FocusScope.of(context).requestFocus(new FocusNode());
+    popContextTwice();
+  }
+
   /// Asks the user whether he really wants to delete the event and either closes
   /// the windows or calls the [onDeletionConfirmed] method.
   void onDeleteButtonPressed(BuildContext context, Data data) {
@@ -211,7 +231,7 @@ class EditorPageState extends State<EditorPage> {
                       border: OutlineInputBorder(), labelText: 'Nachricht')),
             ),
             SizedBox(height: 20),
-            Row(
+            data.isInEditMode ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FloatingActionButton(
@@ -231,7 +251,12 @@ class EditorPageState extends State<EditorPage> {
                   heroTag: 'floatingActionButton0',
                 )
               ],
-            )
+            ) : FloatingActionButton(
+              onPressed: () =>
+                  onUploadButtonPressed(context, messageTextController),
+              tooltip: 'Bestätigen',
+              child: Icon(Icons.done),
+            ),
           ],
         ),
       ),

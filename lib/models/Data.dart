@@ -5,4 +5,5 @@ class Data {
   DateTime dateOfEvent = DateTime.now();
   String message = '';
   String url = 'flutter.io';
+  bool isInEditMode = false;
 }
