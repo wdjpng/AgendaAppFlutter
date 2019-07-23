@@ -2,6 +2,8 @@ import 'package:calendar1/models/Data.dart';
 import 'package:calendar1/pages/loginPage.dart';
 import 'package:calendar1/pages/selectorPage.dart';
 import 'package:flutter/material.dart';
+import 'package:calendar1/otherWidgets/alertShower.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -21,8 +23,16 @@ class _SettingsPageState extends State<SettingsPage> {
         context, MaterialPageRoute(builder: (context) => SelectorPage()));
   }
 
-  void _onSignIn() async {
-
+  void pop(){
+    Navigator.pop(context);
+    Navigator.pop(context);
+  }
+  void _onSignIn() {
+    Navigator.pop(context);
+    AlertShower.showAlert(context, 'ERFOLGREICHE ANMELDUNG',
+        'Sie wurden soeben als Administrator angemeldet. Nun sind Sie in der Lage,'
+            ' Nachrichten an ganze Klassen zu senden.',
+        AlertType.success);
   }
 
   void _handleSignIn() {
@@ -30,9 +40,7 @@ class _SettingsPageState extends State<SettingsPage> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                LoginPage(
-                    onSignedIn: _onSignIn, data: data
-                )));
+                LoginPage(onSignedIn: _onSignIn, data: data)));
   }
 
   @override

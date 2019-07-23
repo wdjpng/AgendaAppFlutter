@@ -3,7 +3,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 class AlertShower {
   /// Shows a rflutter alert.
-  static void showAlert(
+  static showAlert(
       BuildContext context, String title, String message, AlertType alertType) {
     Alert(
       context: context,
