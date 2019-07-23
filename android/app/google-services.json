@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "209455329132-slho4pf2uk40tpdqo1ht7kj140engq70.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wdjpng.calendar1",
+            "certificate_hash": "1867c83fc74160624de6a9483dc07886307088c2"
+          }
+        },
+        {
           "client_id": "209455329132-rqi59ha73kaas7tjcq11sbefq148qh5m.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'selectorPage.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -8,29 +7,18 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: [
-      'email',
-      'https://www.googleapis.com/auth/contacts.readonly',
-    ],
-  );
-
   @override
   void initState() {
     super.initState();
   }
 
-  void _openSelector(BuildContext context) {
+  void _openSelector(BuildContext context)/**/ {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => SelectorPage()));
   }
 
-  Future<void> _handleSignIn() async {
-    try {
-      await _googleSignIn.signIn();
-    } catch (error) {
-      print(error);
-    }
+  void _handleSignIn(){
+    //TODO
   }
 
   @override
