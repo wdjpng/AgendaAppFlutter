@@ -5,6 +5,7 @@ import 'package:calendar1/models/Event.dart';
 import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:calendar1/otherWidgets/alertShower.dart';
 
 /// This widget is used to edit existing sqlite events. It is opened when the
 /// user clicks on a sqlite event in the [EventPage].
@@ -56,27 +57,6 @@ class EventViewerPageState extends State<EventViewerPage> {
     print('Date selected: ' + selectedDate.toIso8601String());
   }
 
-  /// Shows a rflutter alert.
-  void showAlert(
-      BuildContext context, String title, String message, AlertType alertType) {
-    Alert(
-      context: context,
-      type: alertType,
-      title: title,
-      desc: message,
-      buttons: [
-        DialogButton(
-          child: Text(
-            "OK",
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-          onPressed: () => Navigator.pop(context),
-          width: 120,
-        )
-      ],
-    ).show();
-  }
-
   /// Returns the text for the button to select the date based on the selected date.
   String getButtonText(DateTime selectedDate) {
     return 'Der ' +
@@ -91,7 +71,7 @@ class EventViewerPageState extends State<EventViewerPage> {
   /// Checks whether all input fields are filled in correctly.
   bool isCorrectUserData(String message, BuildContext context) {
     if (message == "") {
-      showAlert(context, "NICHT ALLE FELDER AUSGEFÜLLT",
+      AlertShower.showAlert(context, "NICHT ALLE FELDER AUSGEFÜLLT",
           "Bitte geben Sie eine Nachricht ein", AlertType.error);
       return false;
     }
@@ -129,7 +109,7 @@ class EventViewerPageState extends State<EventViewerPage> {
 
     updateEvent(data, newMessage, selectedDate);
 
-    showAlert(context, "Eintrag erfolgreich verändert", "", AlertType.success);
+    AlertShower.showAlert(context, "Eintrag erfolgreich verändert", "", AlertType.success);
     FocusScope.of(context).requestFocus(new FocusNode());
     popContextTwice();
   }
@@ -161,7 +141,7 @@ class EventViewerPageState extends State<EventViewerPage> {
     }
 
     pushEvent(message);
-    showAlert(
+    AlertShower.showAlert(
         context, "DATEN ERFOLGREICH HOCHGELADEN", "", AlertType.success);
     FocusScope.of(context).requestFocus(new FocusNode());
     popContextTwice();
