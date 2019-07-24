@@ -29,6 +29,7 @@ class FirestoreHelper {
     newEvents.insertAll(0, EventsPageState.sqliteEvents);
 
     EventsPageState.onlineEvents = [];
+
     /// Adds the online events that have the correct subjects to the new events.
     for (var i = 0; i < snapshot.length; i++) {
       /// Creates the new potential event basedt on the online event.
@@ -58,7 +59,7 @@ class FirestoreHelper {
     for (var i = 0; i < newEvents.length; i++) {
       if (messagesOnThisDay.length > 0) {
         if (newEvents[i - 1].dateOfEvent.year ==
-            newEvents[i].dateOfEvent.year &&
+                newEvents[i].dateOfEvent.year &&
             newEvents[i - 1].dateOfEvent.month ==
                 newEvents[i].dateOfEvent.month &&
             newEvents[i - 1].dateOfEvent.day == newEvents[i].dateOfEvent.day) {
@@ -96,15 +97,20 @@ class FirestoreHelper {
     for (var i = 0; i < EventsPageState.eventsAsStrings.keys.length; i++) {
       /// If one of the key's days is today, the messages will be merged together.
       if (EventsPageState.eventsAsStrings.keys.elementAt(i).year ==
-          currentDateTime.year &&
+              currentDateTime.year &&
           EventsPageState.eventsAsStrings.keys.elementAt(i).month ==
               currentDateTime.month &&
-          EventsPageState.eventsAsStrings.keys.elementAt(i).day == currentDateTime.day &&
-          EventsPageState.eventsAsStrings.keys.elementAt(i) != currentDateTime) {
+          EventsPageState.eventsAsStrings.keys.elementAt(i).day ==
+              currentDateTime.day &&
+          EventsPageState.eventsAsStrings.keys.elementAt(i) !=
+              currentDateTime) {
         EventsPageState.eventsAsStrings[currentDateTime] = ['Heute'];
-        EventsPageState.eventsAsStrings[currentDateTime].insertAll(0,
-            EventsPageState.eventsAsStrings[EventsPageState.eventsAsStrings.keys.elementAt(i)]);
-        EventsPageState.eventsAsStrings.remove(EventsPageState.eventsAsStrings.keys.elementAt(i));
+        EventsPageState.eventsAsStrings[currentDateTime].insertAll(
+            0,
+            EventsPageState.eventsAsStrings[
+                EventsPageState.eventsAsStrings.keys.elementAt(i)]);
+        EventsPageState.eventsAsStrings
+            .remove(EventsPageState.eventsAsStrings.keys.elementAt(i));
         break;
       }
     }
@@ -112,8 +118,32 @@ class FirestoreHelper {
     EventsPageState.visibleEvents = EventsPageState.eventsAsStrings;
   }
 
-  static void pushEvent(String message, DateTime dateOfEvent, String subject){
-    Firestore.instance.collection('events').document()
-        .setData({ 'message': message, 'dateOfEvent': dateOfEvent, 'subject' : subject, 'datePublished' : DateTime.now(), 'lastUpdate' : DateTime.now()});
+  static void pushEvent(String message, DateTime dateOfEvent, String subject) {
+    Firestore.instance.collection('events').document().setData({
+      'message': message,
+      'dateOfEvent': dateOfEvent,
+      'subject': subject,
+      'lastUpdate': DateTime.now()
+    });
+  }
+
+  static void updateEvent(Event oldEvent, Event newEvent) {
+    String idOfEvent = "";
+
+    for (var i = 0; i < EventsPageState.onlineEvents.length; i++) {
+      if (oldEvent.areDateAndMessageEqual(EventsPageState.onlineEvents[i])) {
+        idOfEvent = EventsPageState.onlineEvents[i].id;
+        break;
+      }
+    }
+
+    if (idOfEvent != "") {
+      Firestore.instance.collection('events').document(idOfEvent).updateData({
+        'message': newEvent.message,
+        'dateOfEvent': newEvent.dateOfEvent,
+        'subject': newEvent.subject,
+        'lastUpdate': DateTime.now()
+      });
+    }
   }
 }

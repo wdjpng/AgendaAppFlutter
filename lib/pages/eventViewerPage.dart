@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:calendar1/otherWidgets/alertShower.dart';
 import 'package:calendar1/services/fireStoreHelpers.dart';
+import 'eventsPage.dart';
 
 /// This widget is used to edit existing sqlite events. It is opened when the
 /// user clicks on a sqlite event in the [EventPage].
@@ -106,11 +107,11 @@ class EventViewerPageState extends State<EventViewerPage> {
   }
 
   /// Updates an event in the offline sqlite database.
-  void updateEvent(Data oldData, String newMessage, DateTime newDateOfEvent) {
+  void updateEventOffline(Data oldData, String newMessage, DateTime newDateOfEvent) {
     SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
     helper.updateEvent(oldData.message, newMessage, newDateOfEvent);
   }
-
+  
   /// Checks for correct user data, updates the data and shows a success message.
   void eventUpdateHandler(BuildContext context, Data data, String newMessage) {
     ///Closes the keyboard
@@ -120,7 +121,16 @@ class EventViewerPageState extends State<EventViewerPage> {
       return;
     }
 
-    updateEvent(data, newMessage, selectedDate);
+    if(data.isInAdminMode && !EventsPageState.isEventEditableByUser(data.message)){
+      Event oldEvent = new Event(data.message, data.dateOfEvent);
+      Event newEvent = new Event(newMessage, selectedDate);
+      newEvent.subject = selectedSubject;
+
+      FirestoreHelper.updateEvent(oldEvent, newEvent);
+    } else{
+      updateEventOffline(data, newMessage, selectedDate);
+    }
+    
 
     AlertShower.showAlert(
         context, "Eintrag erfolgreich verändert", "", AlertType.success);

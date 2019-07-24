@@ -30,6 +30,8 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   static List<String> chosenSubjects = List<String>();
   static List _selectedEvents;
   final key = new GlobalKey<ScaffoldState>();
+  //TODO load this information
+  bool isInAdminMode = true;
 
   AnimationController _controller;
 
@@ -83,6 +85,7 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     Data data = new Data();
     data.dateOfEvent = _selectedDay;
     data.isInEditMode = false;
+    data.isInAdminMode = isInAdminMode;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -95,7 +98,7 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
 
   /// Checks whether the message is in the offline sqlite database and thus
   /// editable by the user.
-  bool isEventEditableByUser(String message) {
+  static bool isEventEditableByUser(String message) {
     for (var i = 0; i < sqliteEvents.length; i++) {
       if (sqliteEvents[i].message == message) {
         return true;
@@ -108,11 +111,12 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   /// Called when the user clicks on an event, checks wether the user can edit
   /// it and if so opens the [EventViewerPage] to edit that message.
   void onEventPressed(BuildContext context, String message) {
-    if (isEventEditableByUser(message)) {
+    if (isEventEditableByUser(message) || isInAdminMode) {
       Data data = new Data();
       data.dateOfEvent = _selectedDay;
       data.message = message;
       data.isInEditMode = true;
+      data.isInAdminMode = isInAdminMode;
       Navigator.push(
         context,
         MaterialPageRoute(
