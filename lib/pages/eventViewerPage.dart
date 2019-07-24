@@ -41,6 +41,15 @@ class EventViewerPageState extends State<EventViewerPage> {
     super.initState();
     selectedDate = data.dateOfEvent;
     messageTextController.text = data.message;
+
+    if(data.isInAdminMode && data.isInEditMode){
+      Event thisEvent = new Event(data.message, selectedDate);
+      for(var i = 0; i < EventsPageState.onlineEvents.length; i++){
+        if(thisEvent.areDateAndMessageEqual(EventsPageState.onlineEvents[i])){
+          selectedSubject = EventsPageState.onlineEvents[i].subject;
+        }
+      }
+    }
   }
 
   /// Opens the date selector.
