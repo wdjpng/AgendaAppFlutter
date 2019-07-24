@@ -4,7 +4,7 @@ import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
 class Event implements Comparable<Event> {
   String publisher;
   int type;
-  int id;
+  String id;
   String schoolSubject;
   String subject;
   String message;
