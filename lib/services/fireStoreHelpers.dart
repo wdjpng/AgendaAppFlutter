@@ -109,6 +109,6 @@ class FirestoreHelper {
 
   static void pushEvent(String message, DateTime dateOfEvent, String subject){
     Firestore.instance.collection('events').document()
-        .setData({ 'message': message, 'dateOfEvent': dateOfEvent, 'subject' : subject, 'datePublished' : DateTime.now(), 'datePublished' : DateTime.now()});
+        .setData({ 'message': message, 'dateOfEvent': dateOfEvent, 'subject' : subject, 'datePublished' : DateTime.now(), 'lastUpdate' : DateTime.now()});
   }
 }
