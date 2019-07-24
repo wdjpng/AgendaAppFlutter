@@ -20,7 +20,7 @@ class FirestoreHelper {
   static void updateEvents(
       List<DocumentSnapshot> snapshot, BuildContext context) {
     List<Event> newEvents = [];
-    EventsPageState.events = Map<DateTime, List>();
+    EventsPageState.eventsAsStrings = Map<DateTime, List>();
 
     //TODO clearly split these those database types
     SqliteDatabaseHelper.readEvents();
@@ -28,12 +28,17 @@ class FirestoreHelper {
     /// This is used to pass by value and not by reference
     newEvents.insertAll(0, EventsPageState.sqliteEvents);
 
+    EventsPageState.onlineEvents = [];
     /// Adds the online events that have the correct subjects to the new events.
     for (var i = 0; i < snapshot.length; i++) {
       /// Creates the new potential event basedt on the online event.
       Event potentialEvent = new Event(snapshot[i].data['message'],
           snapshot[i].data['dateOfEvent'].toDate());
       potentialEvent.subject = snapshot[i].data['subject'];
+      potentialEvent.id = snapshot[i].documentID;
+      potentialEvent.lastUpdate = snapshot[i].data['lastUpdate'].toDate();
+
+      EventsPageState.onlineEvents.add(potentialEvent);
 
       /// Adds the event to the [newEvents].
       for (var i = 0; i < EventsPageState.chosenSubjects.length; i++) {
@@ -67,7 +72,7 @@ class FirestoreHelper {
           ///
           /// Afterwards the [messagesOnThisDay] can be reset and the new event
           /// of the next day can be added to it.
-          EventsPageState.events.putIfAbsent(
+          EventsPageState.eventsAsStrings.putIfAbsent(
               newEvents[i - 1].dateOfEvent, () => messagesOnThisDay);
           messagesOnThisDay = [];
           messagesOnThisDay.add(newEvents[i].message);
@@ -81,30 +86,30 @@ class FirestoreHelper {
 
     /// This adds the last [messageOnThisDay] to the events.
     if (newEvents.length != 0) {
-      EventsPageState.events.putIfAbsent(
+      EventsPageState.eventsAsStrings.putIfAbsent(
           newEvents[newEvents.length - 1].dateOfEvent, () => messagesOnThisDay);
     }
 
     /// Because we have used putIfAbsent but there always is the event
     /// 'Today', we have to merge today's messages with the event 'Today'.
-    EventsPageState.events[currentDateTime] = ['Heute'];
-    for (var i = 0; i < EventsPageState.events.keys.length; i++) {
+    EventsPageState.eventsAsStrings[currentDateTime] = ['Heute'];
+    for (var i = 0; i < EventsPageState.eventsAsStrings.keys.length; i++) {
       /// If one of the key's days is today, the messages will be merged together.
-      if (EventsPageState.events.keys.elementAt(i).year ==
+      if (EventsPageState.eventsAsStrings.keys.elementAt(i).year ==
           currentDateTime.year &&
-          EventsPageState.events.keys.elementAt(i).month ==
+          EventsPageState.eventsAsStrings.keys.elementAt(i).month ==
               currentDateTime.month &&
-          EventsPageState.events.keys.elementAt(i).day == currentDateTime.day &&
-          EventsPageState.events.keys.elementAt(i) != currentDateTime) {
-        EventsPageState.events[currentDateTime] = ['Heute'];
-        EventsPageState.events[currentDateTime].insertAll(0,
-            EventsPageState.events[EventsPageState.events.keys.elementAt(i)]);
-        EventsPageState.events.remove(EventsPageState.events.keys.elementAt(i));
+          EventsPageState.eventsAsStrings.keys.elementAt(i).day == currentDateTime.day &&
+          EventsPageState.eventsAsStrings.keys.elementAt(i) != currentDateTime) {
+        EventsPageState.eventsAsStrings[currentDateTime] = ['Heute'];
+        EventsPageState.eventsAsStrings[currentDateTime].insertAll(0,
+            EventsPageState.eventsAsStrings[EventsPageState.eventsAsStrings.keys.elementAt(i)]);
+        EventsPageState.eventsAsStrings.remove(EventsPageState.eventsAsStrings.keys.elementAt(i));
         break;
       }
     }
 
-    EventsPageState.visibleEvents = EventsPageState.events;
+    EventsPageState.visibleEvents = EventsPageState.eventsAsStrings;
   }
 
   static void pushEvent(String message, DateTime dateOfEvent, String subject){

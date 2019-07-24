@@ -23,7 +23,8 @@ class EventsPage extends StatefulWidget {
 
 class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   static DateTime _selectedDay;
-  static Map<DateTime, List> events;
+  static Map<DateTime, List> eventsAsStrings;
+  static List<Event> onlineEvents;
   static Map<DateTime, List> visibleEvents;
   static List<Event> sqliteEvents = List<Event>();
   static List<String> chosenSubjects = List<String>();
@@ -36,12 +37,12 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     super.initState();
     _selectedDay = currentDateTime;
 
-    events = {
+    eventsAsStrings = {
       _selectedDay: ['Heute']
     };
 
-    _selectedEvents = events[_selectedDay] ?? [];
-    visibleEvents = events;
+    _selectedEvents = eventsAsStrings[_selectedDay] ?? [];
+    visibleEvents = eventsAsStrings;
 
     _controller = AnimationController(
       vsync: this,
@@ -64,7 +65,7 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
       DateTime first, DateTime last, CalendarFormat format) {
     setState(() {
       visibleEvents = Map.fromEntries(
-        events.entries.where(
+        eventsAsStrings.entries.where(
           (entry) =>
               entry.key.isAfter(first.subtract(const Duration(days: 1))) &&
               entry.key.isBefore(last.add(const Duration(days: 1))),

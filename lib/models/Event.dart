@@ -8,7 +8,7 @@ class Event implements Comparable<Event> {
   String schoolSubject;
   String subject;
   String message;
-  DateTime datePublished;
+  DateTime lastUpdate;
   DateTime dateOfEvent;
 
   /// Compares to events based on their date
@@ -42,7 +42,7 @@ class Event implements Comparable<Event> {
     this.subject = subject;
     this.message = message;
     this.dateOfEvent = dateOfEvent;
-    this.datePublished = datePublished;
+    this.lastUpdate = lastUpdate;
   }
 
   bool areDateAndMessageEqual(Event otherEvent) {
