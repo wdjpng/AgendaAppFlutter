@@ -146,4 +146,19 @@ class FirestoreHelper {
       });
     }
   }
+
+  static void deleteEvent(Event event) {
+    String idOfEvent = "";
+
+    for (var i = 0; i < EventsPageState.onlineEvents.length; i++) {
+      if (event.areDateAndMessageEqual(EventsPageState.onlineEvents[i])) {
+        idOfEvent = EventsPageState.onlineEvents[i].id;
+        break;
+      }
+    }
+
+    if (idOfEvent != "") {
+      Firestore.instance.collection('events').document(idOfEvent).delete();
+    }
+  }
 }

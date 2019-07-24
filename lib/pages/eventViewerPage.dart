@@ -149,12 +149,17 @@ class EventViewerPageState extends State<EventViewerPage> {
 
   /// Deletes an event and closes the alert as well as the input form.
   void onDeletionConfirmed(Data data, BuildContext context) {
-    deleteEvent(data);
+    if(data.isInAdminMode){
+      FirestoreHelper.deleteEvent(new Event(data.message, data.dateOfEvent));
+    } else {
+      deleteEventOffline(data);
+    }
+
     popContextTwice();
   }
 
   /// Deletes the event in the offline sqlite database.
-  void deleteEvent(Data data) async {
+  void deleteEventOffline(Data data) async {
     SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
     int id = await helper.deleteEvent(data.message);
     print('deleted row: $id');
