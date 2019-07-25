@@ -112,7 +112,7 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   /// Called when the user clicks on an event, checks wether the user can edit
   /// it and if so opens the [EventViewerPage] to edit that message.
   void onEventPressed(BuildContext context, String message) {
-    if (isEventEditableByUser(message) || isInAdminMode) {
+    if ((isEventEditableByUser(message) || isInAdminMode) && message != 'Heute') {
       Data data = new Data();
       data.dateOfEvent = _selectedDay;
       data.message = message;

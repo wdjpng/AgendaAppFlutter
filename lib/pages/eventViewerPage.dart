@@ -82,16 +82,18 @@ class EventViewerPageState extends State<EventViewerPage> {
 
   /// Checks whether all input fields are filled in correctly.
   bool isCorrectUserData(String message, BuildContext context) {
-    if (message == "" && selectedSubject != null && data.isInAdminMode) {
+    if (message == "" && selectedSubject == null && data.isInAdminMode) {
       AlertShower.showAlert(context, "NICHT ALLE FELDER AUSGEFÜLLT",
           "Bitte geben Sie eine Nachricht ein und wählen Sie eine Klasse aus", AlertType.error);
       return false;
     } else if(message == ""){
       AlertShower.showAlert(context, "NICHT ALLE FELDER AUSGEFÜLLT",
           "Bitte geben Sie eine Nachricht ein", AlertType.error);
-    } else if(selectedSubject != null && data.isInAdminMode){
+      return false;
+    } else if(selectedSubject == null && data.isInAdminMode){
       AlertShower.showAlert(context, "NICHT ALLE FELDER AUSGEFÜLLT",
           "Bitte wählen Sie eine Klasse aus", AlertType.error);
+      return false;
     }
 
     return true;
@@ -187,6 +189,7 @@ class EventViewerPageState extends State<EventViewerPage> {
     AlertShower.showAlert(
         context, "DATEN ERFOLGREICH HOCHGELADEN", "", AlertType.success);
     FocusScope.of(context).requestFocus(new FocusNode());
+
     popContextTwice();
   }
 
