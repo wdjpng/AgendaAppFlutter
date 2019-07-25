@@ -97,11 +97,10 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     );
   }
 
-  /// Checks whether the message is in the offline sqlite database and thus
-  /// editable by the user.
-  static bool isOfflineEvent(String message) {
+  /// Checks whether the message is in the offline sqlite database
+  static bool isOfflineEvent(String message, DateTime dateOfEvent) {
     for (var i = 0; i < sqliteEvents.length; i++) {
-      if (sqliteEvents[i].message == message) {
+      if (sqliteEvents[i].message == message && sqliteEvents[i].dateOfEvent == dateOfEvent) {
         return true;
       }
     }
@@ -112,12 +111,12 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   /// Called when the user clicks on an event, checks wether the user can edit
   /// it and if so opens the [EventViewerPage] to edit that message.
   void onEventPressed(BuildContext context, String message) {
-    if ((isOfflineEvent(message) || isInAdminMode) && message != 'Heute') {
+    if ((isOfflineEvent(message, _selectedDay) || isInAdminMode) && message != 'Heute') {
       Data data = new Data();
       data.dateOfEvent = _selectedDay;
       data.message = message;
       data.isInEditMode = true;
-      data.isInAdminMode = !isOfflineEvent(data.message);
+      data.isInAdminMode = !isOfflineEvent(data.message, _selectedDay);
       data.subjects = chosenSubjects;
       Navigator.push(
         context,
