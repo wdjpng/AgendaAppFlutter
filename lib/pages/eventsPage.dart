@@ -7,6 +7,7 @@ import 'package:calendar1/services/sqliteDatabaseHelpers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:calendar1/services/authentication.dart';
 
 DateTime currentDateTime = DateTime.now();
 
@@ -30,8 +31,7 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   static List<String> chosenSubjects = List<String>();
   static List _selectedEvents;
   final key = new GlobalKey<ScaffoldState>();
-  //TODO load this information
-  bool isInAdminMode = true;
+  static bool isInAdminMode;
 
   AnimationController _controller;
 
@@ -52,8 +52,14 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     );
 
     _controller.forward();
+
+    updateAdminMode();
   }
 
+  void updateAdminMode() async{
+    Auth auth = new Auth();
+    isInAdminMode = await auth.isUserSignedIn();
+  }
   void _onDaySelected(DateTime day, List events) {
     setState(() {
       _selectedDay = day;
