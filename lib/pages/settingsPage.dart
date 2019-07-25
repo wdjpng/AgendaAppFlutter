@@ -34,7 +34,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _onSignIn() {
     Navigator.pop(context);
-    AlertShower.showAlert(context, 'ERFOLGREICHE ANMELDUNG',
+    AlertShower.showAlert(
+        context,
+        'ERFOLGREICHE ANMELDUNG',
         'Sie wurden soeben als Administrator angemeldet. Nun sind Sie in der Lage,'
             ' Nachrichten an ganze Klassen zu senden.',
         AlertType.success);
@@ -65,7 +67,8 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  @override Widget build(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('AgendaApp'),
@@ -73,16 +76,26 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: new ListView(
         children: <Widget>[
-          new RaisedButton(
-            onPressed: () => _openSelector(context),
-            child: const Text(
-              'Fächer auswählen',
-            ),
-          ),
           new SwitchListTile(
             value: EventsPageState.isInAdminMode,
             onChanged: (value) => onTryToUpdateAdminMode(),
             title: new Text('Administrationsrechte'),
+          ),
+          Divider(
+            height: 20.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+
+              RaisedButton(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                onPressed: () => _openSelector(context),
+                child: Text('Fächer auswählen', style: TextStyle(fontSize: 20)),
+                color: Colors.lightBlue,
+                textColor: Colors.white,
+              ),
+            ],
           )
         ],
       ),
