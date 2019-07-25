@@ -132,7 +132,7 @@ class EventViewerPageState extends State<EventViewerPage> {
       return;
     }
 
-    if(data.isInAdminMode && !EventsPageState.isEventEditableByUser(data.message)){
+    if(data.isInAdminMode){
       Event oldEvent = new Event(data.message, data.dateOfEvent);
       Event newEvent = new Event(newMessage, selectedDate);
       newEvent.subject = selectedSubject;

@@ -117,7 +117,7 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
       data.dateOfEvent = _selectedDay;
       data.message = message;
       data.isInEditMode = true;
-      data.isInAdminMode = isInAdminMode;
+      data.isInAdminMode = !isEventEditableByUser(data.message);
       data.subjects = chosenSubjects;
       Navigator.push(
         context,
