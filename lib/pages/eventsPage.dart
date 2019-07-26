@@ -25,13 +25,13 @@ class EventsPage extends StatefulWidget {
 }
 
 class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
-  static DateTime _selectedDay;
-  static Map<DateTime, List> eventsAsStrings;
-  static List<Event> onlineEvents;
-  static Map<DateTime, List> visibleEvents;
-  static List<Event> sqliteEvents = List<Event>();
-  static List<String> chosenSubjects = List<String>();
-  static List _selectedEvents;
+  DateTime _selectedDay;
+  Map<DateTime, List> eventsAsStrings;
+  List<Event> onlineEvents;
+  Map<DateTime, List> visibleEvents;
+  List<Event> sqliteEvents = List<Event>();
+  List<String> chosenSubjects = List<String>();
+  List _selectedEvents;
   final key = new GlobalKey<ScaffoldState>();
   static bool isInAdminMode;
 
@@ -95,6 +95,7 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     data.isInEditMode = false;
     data.isInAdminMode = isInAdminMode;
     data.subjects = chosenSubjects;
+    data.onlineEvents = onlineEvents;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -106,7 +107,7 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   }
 
   /// Checks whether the message is in the offline sqlite database
-  static bool isOfflineEvent(String message, DateTime dateOfEvent) {
+  bool isOfflineEvent(String message, DateTime dateOfEvent) {
     for (var i = 0; i < sqliteEvents.length; i++) {
       if (sqliteEvents[i].message == message && sqliteEvents[i].dateOfEvent == dateOfEvent) {
         return true;
@@ -126,6 +127,8 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
       data.isInEditMode = true;
       data.isInAdminMode = !isOfflineEvent(data.message, _selectedDay);
       data.subjects = chosenSubjects;
+      data.onlineEvents = onlineEvents;
+
       Navigator.push(
         context,
         MaterialPageRoute(

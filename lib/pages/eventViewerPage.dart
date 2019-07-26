@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:calendar1/otherWidgets/alertShower.dart';
 import 'package:calendar1/services/fireStoreHelpers.dart';
-import 'eventsPage.dart';
 
 /// This widget is used to edit existing sqlite events. It is opened when the
 /// user clicks on a sqlite event in the [EventPage].
@@ -44,9 +43,9 @@ class EventViewerPageState extends State<EventViewerPage> {
 
     if(data.isInAdminMode && data.isInEditMode){
       Event thisEvent = new Event(data.message, selectedDate);
-      for(var i = 0; i < EventsPageState.onlineEvents.length; i++){
-        if(thisEvent.areDateAndMessageEqual(EventsPageState.onlineEvents[i])){
-          selectedSubject = EventsPageState.onlineEvents[i].subject;
+      for(var i = 0; i < data.onlineEvents.length; i++){
+        if(thisEvent.areDateAndMessageEqual(data.onlineEvents[i])){
+          selectedSubject = data.onlineEvents[i].subject;
         }
       }
     }
@@ -137,7 +136,7 @@ class EventViewerPageState extends State<EventViewerPage> {
       Event newEvent = new Event(newMessage, selectedDate);
       newEvent.subject = selectedSubject;
 
-      FirestoreHelper.updateEvent(oldEvent, newEvent);
+      FirestoreHelper.updateEvent(oldEvent, newEvent, data.onlineEvents);
     } else{
       updateEventOffline(data, newMessage, selectedDate);
     }
@@ -152,7 +151,7 @@ class EventViewerPageState extends State<EventViewerPage> {
   /// Deletes an event and closes the alert as well as the input form.
   void onDeletionConfirmed(Data data, BuildContext context) {
     if(data.isInAdminMode){
-      FirestoreHelper.deleteEvent(new Event(data.message, data.dateOfEvent));
+      FirestoreHelper.deleteEvent(new Event(data.message, data.dateOfEvent), data.onlineEvents);
     } else {
       deleteEventOffline(data);
     }

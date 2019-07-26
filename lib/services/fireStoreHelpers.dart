@@ -1,5 +1,4 @@
 import 'package:calendar1/models/Event.dart';
-import 'package:calendar1/pages/eventsPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -44,12 +43,12 @@ class FirestoreHelper {
     });
   }
 
-  static void updateEvent(Event oldEvent, Event newEvent) {
+  static void updateEvent(Event oldEvent, Event newEvent, List<Event> events) {
     String idOfEvent = "";
 
-    for (var i = 0; i < EventsPageState.onlineEvents.length; i++) {
-      if (oldEvent.areDateAndMessageEqual(EventsPageState.onlineEvents[i])) {
-        idOfEvent = EventsPageState.onlineEvents[i].id;
+    for (var i = 0; i < events.length; i++) {
+      if (oldEvent.areDateAndMessageEqual(events[i])) {
+        idOfEvent = events[i].id;
         break;
       }
     }
@@ -64,12 +63,12 @@ class FirestoreHelper {
     }
   }
 
-  static void deleteEvent(Event event) {
+  static void deleteEvent(Event event, List<Event> onlineEvents) {
     String idOfEvent = "";
 
-    for (var i = 0; i < EventsPageState.onlineEvents.length; i++) {
-      if (event.areDateAndMessageEqual(EventsPageState.onlineEvents[i])) {
-        idOfEvent = EventsPageState.onlineEvents[i].id;
+    for (var i = 0; i < onlineEvents.length; i++) {
+      if (event.areDateAndMessageEqual(onlineEvents[i])) {
+        idOfEvent = onlineEvents[i].id;
         break;
       }
     }
