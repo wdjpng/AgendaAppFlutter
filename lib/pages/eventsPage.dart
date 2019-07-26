@@ -58,10 +58,11 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     updateAdminMode();
   }
 
-  void updateAdminMode() async{
+  void updateAdminMode() async {
     Auth auth = new Auth();
     isInAdminMode = await auth.isUserSignedIn();
   }
+
   void _onDaySelected(DateTime day, List events) {
     setState(() {
       _selectedDay = day;
@@ -99,8 +100,7 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) =>
-              EventViewerPage(
+          builder: (context) => EventViewerPage(
                 data: data,
               )),
     );
@@ -109,7 +109,8 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   /// Checks whether the message is in the offline sqlite database
   bool isOfflineEvent(String message, DateTime dateOfEvent) {
     for (var i = 0; i < sqliteEvents.length; i++) {
-      if (sqliteEvents[i].message == message && sqliteEvents[i].dateOfEvent == dateOfEvent) {
+      if (sqliteEvents[i].message == message &&
+          sqliteEvents[i].dateOfEvent == dateOfEvent) {
         return true;
       }
     }
@@ -120,7 +121,8 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   /// Called when the user clicks on an event, checks wether the user can edit
   /// it and if so opens the [EventViewerPage] to edit that message.
   void onEventPressed(BuildContext context, String message) {
-    if ((isOfflineEvent(message, _selectedDay) || isInAdminMode) && message != 'Heute') {
+    if ((isOfflineEvent(message, _selectedDay) || isInAdminMode) &&
+        message != 'Heute') {
       Data data = new Data();
       data.dateOfEvent = _selectedDay;
       data.message = message;
@@ -132,8 +134,7 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                EventViewerPage(
+            builder: (context) => EventViewerPage(
                   data: data,
                 )),
       );
@@ -144,17 +145,17 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     }
   }
 
-  void updateData(List<DocumentSnapshot> snapshot) async{
+  void updateData(List<DocumentSnapshot> snapshot) async {
     List<Subject> subjectList = await SqliteDatabaseHelper.getChosenSubjects();
     List<Event> allOnlineEvents = FirestoreHelper.getEvents(snapshot, context);
     sqliteEvents = await SqliteDatabaseHelper.getEvents();
 
     onlineEvents = [];
     chosenSubjects = [];
-    for(var i = 0; i < subjectList.length; i++){
+    for (var i = 0; i < subjectList.length; i++) {
       chosenSubjects.add(subjectList[i].name);
-      for(var j = 0; j < allOnlineEvents.length; j++){
-        if(subjectList[i].name == allOnlineEvents[j].subject){
+      for (var j = 0; j < allOnlineEvents.length; j++) {
+        if (subjectList[i].name == allOnlineEvents[j].subject) {
           onlineEvents.add(allOnlineEvents[j]);
         }
       }
@@ -164,10 +165,23 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     allEventsWithMatchingSubject.addAll(sqliteEvents);
     allEventsWithMatchingSubject.addAll(onlineEvents);
     allEventsWithMatchingSubject.add(new Event('Heute', currentDateTime));
+
+    _selectedEvents = [];
+    for (var i = 0; i < visibleEvents.keys.length; i++) {
+      // THis assumes that both dateimes have set the minutes/hours/seconds to zero
+      if (visibleEvents.keys.elementAt(i) == _selectedDay) {
+        _selectedEvents = visibleEvents[visibleEvents.keys.elementAt(i)];
+      }
+    }
+
     setState(() {
-      visibleEvents = eventsAsStrings = Converter.eventListToMap(allEventsWithMatchingSubject);
+      visibleEvents = eventsAsStrings =
+          Converter.eventListToMap(allEventsWithMatchingSubject);
+
+
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
