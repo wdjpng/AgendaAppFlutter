@@ -8,6 +8,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:calendar1/services/authentication.dart';
+import 'package:calendar1/models/Subject.dart';
+import 'package:calendar1/models/Converter.dart';
 
 DateTime currentDateTime = DateTime.now();
 
@@ -139,14 +141,37 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     }
   }
 
+  void updateData(List<DocumentSnapshot> snapshot) async{
+    List<Subject> subjectList = await SqliteDatabaseHelper.getChosenSubjects();
+    List<Event> allOnlineEvents = FirestoreHelper.getEvents(snapshot, context);
+    sqliteEvents = await SqliteDatabaseHelper.getEvents();
+
+    onlineEvents = [];
+    chosenSubjects = [];
+    for(var i = 0; i < subjectList.length; i++){
+      chosenSubjects.add(subjectList[i].name);
+      for(var j = 0; j < allOnlineEvents.length; j++){
+        if(subjectList[i].name == allOnlineEvents[j].subject){
+          onlineEvents.add(allOnlineEvents[j]);
+        }
+      }
+    }
+
+    List<Event> allEventsWithMatchingSubject = [];
+    allEventsWithMatchingSubject.addAll(sqliteEvents);
+    allEventsWithMatchingSubject.addAll(onlineEvents);
+    allEventsWithMatchingSubject.add(new Event('Heute', currentDateTime));
+    setState(() {
+      visibleEvents = eventsAsStrings = Converter.eventListToMap(allEventsWithMatchingSubject);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('events').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
-        FirestoreHelper.updateEvents(snapshot.data.documents, context);
-        SqliteDatabaseHelper.readChosenSubjects();
+        updateData(snapshot.data.documents);
         return Scaffold(
           key: key,
           appBar: AppBar(

@@ -6,6 +6,7 @@ import 'package:calendar1/pages/eventsPage.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:calendar1/models/Subject.dart';
 
 final String tableEvents = 'events';
 final String columnId = 'id';
@@ -138,35 +139,36 @@ class SqliteDatabaseHelper {
 
   /// Reads events from the sqlite database and saves them to the [sqliteEvents]
   /// from the [EventsPageState] class.
-  static readEvents() async {
+  static Future<List<Event>> getEvents() async {
     SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
 
     List<Map> maps = await helper.getSavedEvents() ?? List<Map>();
-    EventsPageState.sqliteEvents = [];
+    List<Event> events = [];
 
     for (var i = 0; i < maps.length; i++) {
       /// Check whether all important elements of the event are not null
       if (maps[i][columnDateOfEvent] != null &&
           maps[i][columnMessage] != null) {
-        EventsPageState.sqliteEvents.add(Event.fromMap(maps[i]));
+        events.add(Event.fromMap(maps[i]));
       }
     }
 
-    return EventsPageState.sqliteEvents;
+    return events;
   }
 
   /// Reads events from the sqlite database and saves them to the [sqliteEvents]
   /// from the [EventsPageState] class
-  static readChosenSubjects() async {
+  static Future<List<Subject>> getChosenSubjects() async {
     SqliteDatabaseHelper helper = SqliteDatabaseHelper.instance;
-    List<Map> subjects = await helper.getSavedSubjects();
+    List<Map> subjectMap = await helper.getSavedSubjects();
+    List<Subject> subjectList = [];
 
-    EventsPageState.chosenSubjects = List<String>();
-
-    for (var i = 0; i < subjects.length; i++) {
-      if (subjects[i][columnIsSelected] == 1) {
-        EventsPageState.chosenSubjects.add(subjects[i][columnName]);
+    for (var i = 0; i < subjectMap.length; i++) {
+      if (subjectMap[i][columnIsSelected] == 1) {
+        subjectList.add(new Subject(subjectMap[i][columnId], subjectMap[i][columnName], true));
       }
     }
+
+    return subjectList;
   }
 }
