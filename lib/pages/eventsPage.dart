@@ -40,13 +40,12 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _selectedDay = currentDateTime;
-
     eventsAsStrings = {
       _selectedDay: ['Heute']
     };
-
-    _selectedEvents = eventsAsStrings[_selectedDay] ?? [];
     visibleEvents = eventsAsStrings;
+    _onDaySelected(_selectedDay, ['Heute']);
+
 
     _controller = AnimationController(
       vsync: this,
@@ -164,7 +163,6 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     List<Event> allEventsWithMatchingSubject = [];
     allEventsWithMatchingSubject.addAll(sqliteEvents);
     allEventsWithMatchingSubject.addAll(onlineEvents);
-    allEventsWithMatchingSubject.add(new Event('Heute', currentDateTime));
 
     _selectedEvents = [];
     for (var i = 0; i < visibleEvents.keys.length; i++) {
@@ -177,8 +175,6 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     setState(() {
       visibleEvents = eventsAsStrings =
           Converter.eventListToMap(allEventsWithMatchingSubject);
-
-
     });
   }
 
