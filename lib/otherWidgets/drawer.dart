@@ -49,12 +49,25 @@ class DrawerOnly extends StatelessWidget {
           title: Text("Informationen"),
           children: <Widget>[
             new ListTile(
-                title: new Text("Stundenpläne"),
-                leading: new Icon(Icons.web),
+                title: new Text("Schulkontakte"),
+                leading: new Icon(Icons.contacts),
                 onTap: () {
                   Data data = new Data();
                   data.url =
-                      'https://www.sek-baeumlihof.ch/Planung%20des%20Schuljahres/copy_of_stundenplaene';
+                      'https://www.sek-baeumlihof.ch/kontakt';
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => WebViewPage(data: data)));
+                }),
+            new ListTile(
+                title: new Text("Menuplan"),
+                leading: new Icon(Icons.fastfood),
+                onTap: () {
+                  Data data = new Data();
+                  data.url =
+                  'https://baeumlihof.sv-restaurant.ch/de/menuplan/';
                   Navigator.pop(context);
                   Navigator.push(
                       context,
