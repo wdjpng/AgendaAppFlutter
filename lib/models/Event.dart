@@ -47,6 +47,8 @@ class Event implements Comparable<Event> {
 
   bool areDateAndMessageEqual(Event otherEvent) {
     return otherEvent.message == this.message &&
-        this.dateOfEvent == otherEvent.dateOfEvent;
+        (this.dateOfEvent.year == otherEvent.dateOfEvent.year &&
+            this.dateOfEvent.month == otherEvent.dateOfEvent.month &&
+            this.dateOfEvent.day == otherEvent.dateOfEvent.day);
   }
 }
