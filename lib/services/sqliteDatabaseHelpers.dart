@@ -70,6 +70,7 @@ class SqliteDatabaseHelper {
 
   /// Inserts event into sqlite database.
   insertEvent(Event event) async {
+    event.dateOfEvent = new DateTime(event.dateOfEvent.year, event.dateOfEvent.month, event.dateOfEvent.day, 10);
     Database db = await database;
     int id = await db.insert(tableEvents, event.toMap());
     return id;

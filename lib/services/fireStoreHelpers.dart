@@ -35,7 +35,7 @@ class FirestoreHelper {
   }
 
   static void pushEvent(String message, DateTime dateOfEvent, String subject) {
-    dateOfEvent = new DateTime(dateOfEvent.year, dateOfEvent.month, dateOfEvent.day, 12);
+    dateOfEvent = new DateTime(dateOfEvent.year, dateOfEvent.month, dateOfEvent.day, 10);
     Firestore.instance.collection('events').document().setData({
       'message': message,
       'dateOfEvent': dateOfEvent,
