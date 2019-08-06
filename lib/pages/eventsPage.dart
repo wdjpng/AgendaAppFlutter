@@ -164,6 +164,9 @@ class EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
     allEventsWithMatchingSubject.addAll(sqliteEvents);
     allEventsWithMatchingSubject.addAll(onlineEvents);
 
+    for(var i = 0; i < allEventsWithMatchingSubject.length; i++){
+      allEventsWithMatchingSubject[i].dateOfEvent = new DateTime(allEventsWithMatchingSubject[i].dateOfEvent.year, allEventsWithMatchingSubject[i].dateOfEvent.month, allEventsWithMatchingSubject[i].dateOfEvent.day);
+    }
     _selectedEvents = [];
     for (var i = 0; i < visibleEvents.keys.length; i++) {
       // THis assumes that both dateimes have set the minutes/hours/seconds to zero
