@@ -39,7 +39,8 @@ dev_dependencies:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/icon.png"
+  image_path_android: "assets/images/icon_round.png"
+  image_path_ios: "assets/images/launcher_icon_square.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
@@ -52,7 +53,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - assets/images/icon.png
+    - assets/images/icon_round.png
 
 
   # To add assets to your application, add an assets section, like this:

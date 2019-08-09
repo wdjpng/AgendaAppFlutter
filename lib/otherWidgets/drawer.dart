@@ -19,7 +19,7 @@ class DrawerOnly extends StatelessWidget {
               elevation: 0,
               child: Padding(
                 padding: EdgeInsets.all(0.0),
-                child: Image.asset('assets/images/icon.png',
+                child: Image.asset('assets/images/icon_round.png',
                     width: 90, height: 90),
               ),
             ),
