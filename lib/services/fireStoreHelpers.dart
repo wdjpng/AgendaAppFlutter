@@ -2,7 +2,6 @@ import 'package:calendar1/models/Event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-
 final String tableEvents = 'events';
 final String columnId = 'id';
 final String columnDateOfEvent = 'dateOfEvent';
@@ -34,13 +33,16 @@ class FirestoreHelper {
     return events;
   }
 
-  static void pushEvent(String message, DateTime dateOfEvent, String subject) {
-    dateOfEvent = new DateTime(dateOfEvent.year, dateOfEvent.month, dateOfEvent.day, 10);
+  static void pushEvent(String message, DateTime dateOfEvent, String subject,
+      String publisherUid) async {
+    dateOfEvent =
+        new DateTime(dateOfEvent.year, dateOfEvent.month, dateOfEvent.day, 10);
     Firestore.instance.collection('events').document().setData({
       'message': message,
       'dateOfEvent': dateOfEvent,
       'subject': subject,
-      'lastUpdate': DateTime.now()
+      'lastUpdate': DateTime.now(),
+      'publisherUid': publisherUid
     });
   }
 

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:calendar1/otherWidgets/alertShower.dart';
 import 'package:calendar1/services/fireStoreHelpers.dart';
+import 'package:calendar1/services/authentication.dart';
 
 /// This widget is used to edit existing sqlite events. It is opened when the
 /// user clicks on a sqlite event in the [EventPage].
@@ -113,7 +114,10 @@ class EventViewerPageState extends State<EventViewerPage> {
 
   /// Adds new event to the online firestore database.
   void pushEventOnline(String message) async {
-    FirestoreHelper.pushEvent(message, selectedDate, selectedSubject);
+    Auth auth = new Auth();
+    String uid = await auth.getUid();
+
+    FirestoreHelper.pushEvent(message, selectedDate, selectedSubject, uid);
   }
 
   /// Updates an event in the offline sqlite database.
