@@ -1,6 +1,6 @@
 # AgendaApp
 The flutter application to manage events (thought for schools). 
-Admins can send messages to user groups, users can create their own messages localy. Furthermore there are Webviews for cafeteria menues, contact sites or things like that. In a settings page users can sign in as admins and select their groups. 
+Administrators (teachers) can send messages to user groups, users can create their own messages locally. Furthermore there is the open the contact page of the school and the canteen menue. In the settings page users can sign in as admins and select their groups. 
 
 This application is currently mobile but because it uses flutter, web or desktop applications could be created with the same code base.
 
