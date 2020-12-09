@@ -9,7 +9,7 @@ This application is currently mobile but because it uses flutter, web or desktop
 To test the application you will need to install and setup [Android Studio](https://developer.android.com/studio/install), [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [flutter](https://flutter.dev/docs/get-started/install).
 
 ## Installation for users
-The app can at the moment of writing this be downloaded on the [Apple AppStore](https://apps.apple.com/au/app/agendaapp/id1475890760) and the [Google PlayStore](https://play.google.com/store/apps/details?id=com.wdjpng.calendar1). Porting to other platforms is theoretically possible but not planned at the moment.
+The app can at the moment of writing this be downloaded on the and the [Google PlayStore](https://play.google.com/store/apps/details?id=com.wdjpng.calendar1). It was also possible to download the app on the Apple AppStore and it could easely be reuploaded there, provided that the according developer license would be renewed. Porting to other platforms is theoretically possible but not planned at the moment.
 
 ## Installation for developers
 
